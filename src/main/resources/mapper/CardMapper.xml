@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.CardDao" >
+
+
+  <insert id="addCard" parameterType="com.xyf.dto.AddCardDTO" >
+    INSERT INTO `card`
+    (`card_number`, `bank_name`,`card_user_id`, `statement_date`, `repayment_date`)
+    VALUES (#{cardNumber}, #{bankName}, #{cardUserId}, #{statementDate}, #{repaymentDate});
+  </insert>
+
+
+
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.UserDao" >
+
+
+  <insert id="insert" parameterType="com.xyf.dto.AddUserDTO" >
+    INSERT into user (username,password,phone)
+    VALUES ( #{username},#{password},#{phone})
+  </insert>
+
+  <select id="verifyUsername" parameterType="com.xyf.dto.VerifyUsernameDTO" resultType="com.xyf.entity.User">
+    SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
+     from `user` WHERE username = #{username}
+  </select>
+
+  <select id="login" parameterType="com.xyf.dto.LoginDTO" resultType="com.xyf.entity.User">
+    SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
+     from `user` WHERE phone=#{phone} AND password = #{password}
+  </select>
+
+  <select id="getUserByPhone" parameterType="String" resultType="com.xyf.entity.User">
+    SELECT * FROM USER WHERE phone = #{phone}
+  </select>
+  
+  <update id="updatePassword" parameterType="com.xyf.dto.LoginDTO">
+    UPDATE `user` set `password` = #{password} WHERE phone = #{phone}
+  </update>
+
+</mapper>
