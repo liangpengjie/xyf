@@ -26,6 +26,27 @@ public class Card implements Serializable {
     //还款日
     private Date repaymentDate;
 
+    // 状态  0：未激活  1：激活    2：废弃
+    private Integer status;
+
+    private Date createTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Integer getCardId() {
         return cardId;
     }

@@ -9,21 +9,21 @@
   </insert>
 
   <select id="verifyUsername" parameterType="com.xyf.dto.VerifyUsernameDTO" resultType="com.xyf.entity.User">
-    SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
-     from `user` WHERE username = #{username}
+        SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
+         from `user` WHERE username = #{username}
   </select>
 
   <select id="login" parameterType="com.xyf.dto.LoginDTO" resultType="com.xyf.entity.User">
-    SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
-     from `user` WHERE phone=#{phone} AND password = #{password}
+        SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
+         from `user` WHERE phone=#{phone} AND password = #{password}
   </select>
 
   <select id="getUserByPhone" parameterType="String" resultType="com.xyf.entity.User">
-    SELECT * FROM USER WHERE phone = #{phone}
+        SELECT * FROM USER WHERE phone = #{phone}
   </select>
-  
+
   <update id="updatePassword" parameterType="com.xyf.dto.LoginDTO">
-    UPDATE `user` set `password` = #{password} WHERE phone = #{phone}
+    UPDATE `us  er` set `password` = #{password} WHERE phone = #{phone}
   </update>
 
 </mapper>

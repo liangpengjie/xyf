@@ -1,6 +1,7 @@
 package com.xyf.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author 木木
@@ -14,20 +15,48 @@ public class User implements Serializable {
     private String password;
     private String phone;
     private String address;
-    //囤货台数
+    // 囤货台数
     private String goodsNumber;
     //余额
     private Double userBalance;
-    //奖金
+    // 推广奖金
     private Double userBonus;
-    //一级上线
+    // 刷卡奖金
+    private Double useCardBonus;
+    // 一级上线
     private Integer superior1;
-    //二级上线
+    // 二级上线
     private Integer superior2;
-    //三级上线
+    // 三级上线
     private Integer superior3;
-    //四级上线
-    private Integer superior4;
+    //  用户等级    0：普通用户    1：银牌代理     2：金牌代理    3： 钻石代理
+    private Integer level;
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    private Date createTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Double getUseCardBonus() {
+        return useCardBonus;
+    }
+
+    public void setUseCardBonus(Double useCardBonus) {
+        this.useCardBonus = useCardBonus;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -117,11 +146,4 @@ public class User implements Serializable {
         this.superior3 = superior3;
     }
 
-    public Integer getSuperior4() {
-        return superior4;
-    }
-
-    public void setSuperior4(Integer superior4) {
-        this.superior4 = superior4;
-    }
 }
