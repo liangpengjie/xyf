@@ -18,4 +18,6 @@ public interface UserDao {
     User getUserByPhone(String phone);
 
     int updatePassword(LoginDTO dto);
+
+    User getSuperior(Integer superior1);
 }

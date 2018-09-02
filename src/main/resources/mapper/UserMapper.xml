@@ -4,17 +4,17 @@
 
 
   <insert id="insert" parameterType="com.xyf.dto.AddUserDTO" >
-    INSERT into user (username,password,phone)
-    VALUES ( #{username},#{password},#{phone})
+    INSERT into user (username,password,phone,create_time,superior1,superior2,superior3)
+    VALUES ( #{username},#{password},#{phone},#{createTime},#{superior1},#{superior2},#{superior3})
   </insert>
 
   <select id="verifyUsername" parameterType="com.xyf.dto.VerifyUsernameDTO" resultType="com.xyf.entity.User">
-        SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
+        SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,user_bonus userBonus
          from `user` WHERE username = #{username}
   </select>
 
   <select id="login" parameterType="com.xyf.dto.LoginDTO" resultType="com.xyf.entity.User">
-        SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,superior4,user_bonus userBonus
+        SELECT user_id userId,username,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,user_bonus userBonus
          from `user` WHERE phone=#{phone} AND password = #{password}
   </select>
 
@@ -25,5 +25,10 @@
   <update id="updatePassword" parameterType="com.xyf.dto.LoginDTO">
     UPDATE `us  er` set `password` = #{password} WHERE phone = #{phone}
   </update>
+
+  <select id="getSuperior" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
+        SELECT superior1,superior2,superior3
+         from `user` WHERE user_id=#{superior1}
+  </select>
 
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 /**
  * @author 木木
@@ -23,6 +24,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public MyResponse addCard(@Valid AddCardDTO dto) {
         int i = cardDao.addCard(dto);
+        dto.setCreateTime(new Date());
         if(i == 1){
             return new MyResponse();
         }

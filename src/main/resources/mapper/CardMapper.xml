@@ -5,8 +5,8 @@
 
   <insert id="addCard" parameterType="com.xyf.dto.AddCardDTO" >
     INSERT INTO `card`
-    (`card_number`, `bank_name`,`card_user_id`, `statement_date`, `repayment_date`)
-    VALUES (#{cardNumber}, #{bankName}, #{cardUserId}, #{statementDate}, #{repaymentDate});
+    (`card_number`, `bank_name`,`card_user_id`, `statement_date`, `repayment_date`,status,create_time)
+    VALUES (#{cardNumber}, #{bankName}, #{cardUserId}, #{statementDate}, #{repaymentDate},#{status},#{createTime});
   </insert>
 
 

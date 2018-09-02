@@ -21,6 +21,8 @@ public class User implements Serializable {
     private Double userBalance;
     // 推广奖金
     private Double userBonus;
+    //推荐办卡奖金
+    private Double createCardBonus;
     // 刷卡奖金
     private Double useCardBonus;
     // 一级上线
@@ -31,6 +33,15 @@ public class User implements Serializable {
     private Integer superior3;
     //  用户等级    0：普通用户    1：银牌代理     2：金牌代理    3： 钻石代理
     private Integer level;
+    private Date createTime;
+
+    public Double getCreateCardBonus() {
+        return createCardBonus;
+    }
+
+    public void setCreateCardBonus(Double createCardBonus) {
+        this.createCardBonus = createCardBonus;
+    }
 
     public Integer getLevel() {
         return level;
@@ -40,7 +51,6 @@ public class User implements Serializable {
         this.level = level;
     }
 
-    private Date createTime;
 
     public Date getCreateTime() {
         return createTime;

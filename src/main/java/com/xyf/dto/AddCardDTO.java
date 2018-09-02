@@ -3,6 +3,7 @@ package com.xyf.dto;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * @author 木木
@@ -25,6 +26,27 @@ public class AddCardDTO {
     @Min(1)
     @Max(28)
     private int repaymentDate;
+
+    // 状态  0：未激活  1：激活    2：废弃
+    private Integer status = 1;
+
+    private Date createTime;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
     public String getCardNumber() {
         return cardNumber;

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 
 @Service(value = "userService")
@@ -30,6 +31,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public MyResponse addUser(AddUserDTO dto) {
         dto.setPassword(MD5Utils.encryptMD5(dto.getPassword()));
+        dto.setCreateTime(new Date());
+        if(dto.getSuperior1() != 0){
+            User superUser = userDao.getSuperior(dto.getSuperior1());
+            dto.setSuperior2(superUser.getSuperior1());
+            dto.setSuperior3(superUser.getSuperior2());
+        }
         int i = userDao.insert(dto);
         if (i == 1) {
             return new MyResponse();

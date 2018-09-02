@@ -11,25 +11,45 @@ import java.util.Date;
 public class Card implements Serializable {
 
     private Integer cardId;
-    //卡号
+    // 卡号
     private String cardNumber;
-    //银行名
+    // 银行名
     private String bankName;
-    //插卡人姓名
+    // 身份证
+    private String idNumber;
+    // 真实姓名
+    private String realName;
+    // 插卡人姓名
     private String cardUserName;
-    //插卡人id
+    // 插卡人id
     private Integer cardUserId;
-    //卡余额
+    // 卡余额
     private Double bankBonus;
-    //账单日
+    // 账单日
     private Date statementDate;
-    //还款日
+    // 还款日
     private Date repaymentDate;
 
     // 状态  0：未激活  1：激活    2：废弃
     private Integer status;
 
     private Date createTime;
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
 
     public Date getCreateTime() {
         return createTime;
