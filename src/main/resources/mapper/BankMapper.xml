@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.BankDao" >
+
+  <insert id="add" parameterType="com.xyf.entity.manager.Bank">
+    INSERT into bank (bank_name,bank_bonus) VALUES ( #{username},#{bankBonus})
+  </insert>
+
+  <update id="edit" parameterType="com.xyf.entity.manager.Bank">
+    update bank set bank_name = #{bankName} and bank_bonus = #{bankBonus} where bank_id = #{bankId}
+  </update>
+
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from bank where bank_id = #{bankId}
+  </delete>
+
+  <select id="list" resultType="com.xyf.entity.manager.Bank">
+    select * from bank
+  </select>
+
+</mapper>

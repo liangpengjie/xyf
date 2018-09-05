@@ -27,7 +27,7 @@ public class AddCardDTO {
     @Max(28)
     private int repaymentDate;
 
-    // 状态  0：未激活  1：激活    2：废弃
+    /** 状态  0：未激活  1：激活    2：废弃 */
     private Integer status = 1;
 
     private Date createTime;

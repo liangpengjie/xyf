@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.ManagerDao" >
+
+  <insert id="add" parameterType="com.xyf.dto.ManagerDTO" >
+    INSERT into manager_user (username,password) VALUES ( #{username},#{password})
+  </insert>
+
+    <select id="login" parameterType="com.xyf.dto.ManagerDTO" resultType="com.xyf.entity.manager.ManagerUser">
+        SELECT username from `manager_user` WHERE username = #{username} AND password = #{password} and status = 1
+  </select>
+
+  <update id="updatePassword" parameterType="com.xyf.dto.ManagerDTO">
+    UPDATE manager_user set `password` = #{password} WHERE username = #{username}
+  </update>
+
+</mapper>

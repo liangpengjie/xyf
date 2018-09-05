@@ -10,5 +10,5 @@ import javax.validation.Valid;
  * @description
  */
 public interface CardDao {
-    int addCard(@Valid AddCardDTO dto);
+    int addCard(AddCardDTO dto);
 }
