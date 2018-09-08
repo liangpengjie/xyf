@@ -80,4 +80,23 @@ public class UserController {
         return userService.updatePassword(dto);
     }
 
+
+    /**
+     * 查询用户
+     * @param dto
+     * @return
+     */
+    @PostMapping("/selectUserInfo")
+    public MyResponse selectUserInfo(@RequestBody @Valid UserPhoneDTO dto) {
+        return userService.selectUserInfo(dto);
+    }
+
+    /**
+     * 所有用户信息
+     * @return
+     */
+    @PostMapping("/users")
+    public MyResponse users(PageDTO dto) {
+        return userService.users(dto);
+    }
 }

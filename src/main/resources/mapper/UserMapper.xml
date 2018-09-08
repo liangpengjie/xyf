@@ -23,12 +23,35 @@
   </select>
 
   <update id="updatePassword" parameterType="com.xyf.dto.LoginDTO">
-    UPDATE `us  er` set `password` = #{password} WHERE phone = #{phone}
+    UPDATE `user` set `password` = #{password} WHERE phone = #{phone}
+  </update>
+
+  <update id="updateUserLevel" parameterType="com.xyf.dto.InitPartnerDTO">
+    UPDATE `user` set `level` = #{level}
+    <if test="bonus != null">
+        ,user_bonus = #{bonus}
+    </if>
+    WHERE phone = #{phone}
+  </update>
+
+  <update id="updateUserBonus" parameterType="com.xyf.dto.InitPartnerDTO">
+    UPDATE `user` set `user_bonus` = user_bonus + #{monery} WHERE phone = #{phone}
   </update>
 
   <select id="getSuperior" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
-        SELECT superior1,superior2,superior3
+        SELECT *
          from `user` WHERE user_id=#{superior1}
   </select>
+
+  <select id="selectUserInfo" parameterType="com.xyf.dto.UserPhoneDTO" resultType="com.xyf.entity.User">
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+         from `user` WHERE user_id=#{userId}
+  </select>
+
+
+  <select id="users" resultType="com.xyf.entity.User">
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus from `user`
+  </select>
+
 
 </mapper>

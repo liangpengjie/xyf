@@ -1,6 +1,7 @@
 package com.xyf.service.manager;
 
 import com.xyf.common.MyResponse;
+import com.xyf.dto.DeleteBankDTO;
 import com.xyf.entity.manager.Bank;
 
 public interface BankService {
@@ -20,10 +21,9 @@ public interface BankService {
 
     /**
      * 删除银行
-     * @param bankId
      * @return
      */
-    MyResponse delete(Integer bankId);
+    MyResponse delete(DeleteBankDTO dto);
 
     /**
      * 查看所有银行

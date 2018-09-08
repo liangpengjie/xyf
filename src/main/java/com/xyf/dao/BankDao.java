@@ -1,5 +1,6 @@
 package com.xyf.dao;
 
+import com.xyf.dto.DeleteBankDTO;
 import com.xyf.entity.manager.Bank;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface BankDao {
 
     int edit(Bank bank);
 
-    int delete(Integer bankId);
+    int delete(DeleteBankDTO dto);
 
     List<Bank> list();
 }

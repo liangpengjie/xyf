@@ -1,10 +1,10 @@
 package com.xyf.dao;
 
 
-import com.xyf.dto.AddUserDTO;
-import com.xyf.dto.LoginDTO;
-import com.xyf.dto.VerifyUsernameDTO;
+import com.xyf.dto.*;
 import com.xyf.entity.User;
+
+import java.util.List;
 
 public interface UserDao {
 
@@ -20,4 +20,14 @@ public interface UserDao {
     int updatePassword(LoginDTO dto);
 
     User getSuperior(Integer superior1);
+
+    int updateUserLevel(InitPartnerDTO dto);
+
+    User getUserById(Integer superior1);
+
+    int updateUserBonus(InitPartnerDTO dto);
+
+    User selectUserInfo(UserPhoneDTO dto);
+
+    List<User> users();
 }

@@ -1,6 +1,7 @@
 package com.xyf.controller.manager;
 
 import com.xyf.common.MyResponse;
+import com.xyf.dto.DeleteBankDTO;
 import com.xyf.entity.manager.Bank;
 import com.xyf.service.manager.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +42,11 @@ public class BankController {
 
     /**
      * 删除银行信息
-     * @param bankId
      * @return
      */
     @PostMapping("/delete")
-    public MyResponse edit(@RequestBody @NotNull Integer bankId) {
-        return bankService.delete(bankId);
+    public MyResponse edit(@RequestBody @Valid DeleteBankDTO dto) {
+        return bankService.delete(dto);
     }
 
     /**

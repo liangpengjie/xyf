@@ -1,9 +1,8 @@
 package com.xyf.service.manager;
 
 import com.xyf.common.MyResponse;
+import com.xyf.dto.InitPartnerDTO;
 import com.xyf.dto.*;
-
-import javax.validation.constraints.NotNull;
 
 
 public interface ManagerService {
@@ -29,4 +28,11 @@ public interface ManagerService {
      * @return
      */
     MyResponse edit(ManagerDTO dto);
+
+    /**
+     * 后台录入数据合伙人激活
+     * @param dto
+     * @return
+     */
+    MyResponse initPartner(InitPartnerDTO dto);
 }

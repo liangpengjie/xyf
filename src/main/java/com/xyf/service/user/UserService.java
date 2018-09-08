@@ -55,4 +55,17 @@ public interface UserService {
      * @return
      */
     MyResponse checkSMSCode(@NotNull String code);
+
+    /**
+     * 查询用户信息
+     * @param dto
+     * @return
+     */
+    MyResponse selectUserInfo(UserPhoneDTO dto);
+
+    /**
+     * 查询所有用户信息
+     * @return
+     */
+    MyResponse users(PageDTO dto);
 }

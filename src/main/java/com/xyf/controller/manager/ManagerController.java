@@ -1,6 +1,7 @@
 package com.xyf.controller.manager;
 
 import com.xyf.common.MyResponse;
+import com.xyf.dto.InitPartnerDTO;
 import com.xyf.dto.*;
 import com.xyf.service.manager.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 
 @RestController
@@ -51,6 +51,15 @@ public class ManagerController {
         return managerServiceService.edit(dto);
     }
 
+    /**
+     * 后台录入数据合伙人激活
+     * @param dto
+     * @return
+     */
+    @PostMapping("/initPartner")
+    public MyResponse initPartner(@RequestBody @Valid InitPartnerDTO dto) {
+        return managerServiceService.initPartner(dto);
+    }
 
 
 }

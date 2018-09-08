@@ -3,19 +3,19 @@
 <mapper namespace="com.xyf.dao.BankDao" >
 
   <insert id="add" parameterType="com.xyf.entity.manager.Bank">
-    INSERT into bank (bank_name,bank_bonus) VALUES ( #{username},#{bankBonus})
+    INSERT into bank (bank_name,bank_bonus) VALUES ( #{bankName},#{bankBonus})
   </insert>
 
   <update id="edit" parameterType="com.xyf.entity.manager.Bank">
-    update bank set bank_name = #{bankName} and bank_bonus = #{bankBonus} where bank_id = #{bankId}
+    update bank set bank_name = #{bankName}, bank_bonus = #{bankBonus} where bank_id = #{bankId}
   </update>
 
-  <delete id="delete" parameterType="java.lang.Integer">
+  <delete id="delete" parameterType="com.xyf.dto.DeleteBankDTO">
     delete from bank where bank_id = #{bankId}
   </delete>
 
   <select id="list" resultType="com.xyf.entity.manager.Bank">
-    select * from bank
+    select bank_id bankId,bank_name bankName,bank_bonus bankBonus from bank
   </select>
 
 </mapper>

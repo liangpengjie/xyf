@@ -1,5 +1,7 @@
 package com.xyf.service.user.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xyf.common.MD5Utils;
 import com.xyf.common.MyResponse;
 import com.xyf.common.SMSUtils;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 
 
 @Service(value = "userService")
@@ -32,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public MyResponse addUser(AddUserDTO dto) {
         dto.setPassword(MD5Utils.encryptMD5(dto.getPassword()));
         dto.setCreateTime(new Date());
-        if(dto.getSuperior1() != 0){
+        if (dto.getSuperior1() != 0) {
             User superUser = userDao.getSuperior(dto.getSuperior1());
             dto.setSuperior2(superUser.getSuperior1());
             dto.setSuperior3(superUser.getSuperior2());
@@ -70,22 +73,22 @@ public class UserServiceImpl implements UserService {
         int i = SMSUtils.sendSMS(dto.getPhone(), randomVcode, "");
         if (i == 0) {
             HttpSession session = request.getSession();
-            session.setMaxInactiveInterval(5*60);
-            session.setAttribute("verificationCode",randomVcode);
-            log.info("验证码："+ randomVcode);
-            return new MyResponse("发送成功！",1);
+            session.setMaxInactiveInterval(5 * 60);
+            session.setAttribute("verificationCode", randomVcode);
+            log.info("验证码：" + randomVcode);
+            return new MyResponse("发送成功！", 1);
         }
-        return new MyResponse("发送失败！",0);
+        return new MyResponse("发送失败！", 0);
     }
 
     @Override
     public MyResponse checkCode(PhoneLoginDTO dto) {
         String verificationCode = (String) request.getSession().getAttribute("verificationCode");
-        if(StringUtils.equals(dto.getCode(),verificationCode)){
+        if (StringUtils.equals(dto.getCode(), verificationCode)) {
             User user = userDao.getUserByPhone(dto.getPhone());
             return new MyResponse(user);
         }
-        return new MyResponse("验证码错误或以超时，请重试！",0);
+        return new MyResponse("验证码错误或以超时，请重试！", 0);
     }
 
 
@@ -98,10 +101,38 @@ public class UserServiceImpl implements UserService {
     @Override
     public MyResponse checkSMSCode(String code) {
         String verificationCode = (String) request.getSession().getAttribute("verificationCode");
-        if(StringUtils.equals(code,verificationCode)){
+        if (StringUtils.equals(code, verificationCode)) {
             return new MyResponse(true);
         }
-        return new MyResponse("验证码错误或以超时，请重试！",0);
+        return new MyResponse("验证码错误或以超时，请重试！", 0);
+    }
+
+    /**
+     * 查询用户信息
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse selectUserInfo(UserPhoneDTO dto) {
+        User user = userDao.selectUserInfo(dto);
+        if (user != null) {
+            return new MyResponse(user);
+        }
+        return new MyResponse(user);
+    }
+
+    /**
+     * 查询所有用户信息
+     *
+     * @return
+     */
+    @Override
+    public MyResponse users(PageDTO dto) {
+        PageHelper.startPage(dto.getPageNumber(), dto.getPageSize());
+        List<User> users = userDao.users();
+        PageInfo result = new PageInfo(users);
+        return new MyResponse(result);
     }
 
     /**

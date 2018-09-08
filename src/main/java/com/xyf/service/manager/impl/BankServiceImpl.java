@@ -3,6 +3,7 @@ package com.xyf.service.manager.impl;
 import com.xyf.common.MD5Utils;
 import com.xyf.common.MyResponse;
 import com.xyf.dao.BankDao;
+import com.xyf.dto.DeleteBankDTO;
 import com.xyf.entity.manager.Bank;
 import com.xyf.service.manager.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +49,11 @@ public class BankServiceImpl implements BankService {
     /**
      * 删除银行
      *
-     * @param bankId
      * @return
      */
     @Override
-    public MyResponse delete(Integer bankId) {
-        int i = bankDao.delete(bankId);
+    public MyResponse delete(DeleteBankDTO dto) {
+        int i = bankDao.delete(dto);
         if (i == 1) {
             return new MyResponse();
         }
