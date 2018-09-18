@@ -1,8 +1,11 @@
 package com.xyf.dao;
 
 import com.xyf.dto.AddCardDTO;
+import com.xyf.dto.UserPhoneDTO;
+import com.xyf.entity.Card;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author 木木
@@ -11,4 +14,6 @@ import javax.validation.Valid;
  */
 public interface CardDao {
     int addCard(AddCardDTO dto);
+
+    List<Card> cardList(UserPhoneDTO dto);
 }

@@ -5,6 +5,7 @@ import com.xyf.dto.*;
 import com.xyf.entity.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserDao {
 
@@ -29,5 +30,9 @@ public interface UserDao {
 
     User selectUserInfo(UserPhoneDTO dto);
 
-    List<User> users();
+    List<User> users(PageDTO dto);
+
+    void updatereateCardBonusByPhone(Map map);
+
+    void updateUseCardBonus(Map map);
 }

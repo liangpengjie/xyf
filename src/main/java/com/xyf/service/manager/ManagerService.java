@@ -35,4 +35,18 @@ public interface ManagerService {
      * @return
      */
     MyResponse initPartner(InitPartnerDTO dto);
+
+    /**
+     * 用户办卡成功返现奖励
+     * @param dto
+     * @return
+     */
+    MyResponse initCreateCard(ListDTO dto);
+
+    /**
+     * 后台录入刷卡奖励
+     * @param dto
+     * @return
+     */
+    MyResponse initUserCradBonus(ListDTO dto);
 }

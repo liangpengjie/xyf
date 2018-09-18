@@ -3,12 +3,16 @@ package com.xyf.service.card.impl;
 import com.xyf.common.MyResponse;
 import com.xyf.dao.CardDao;
 import com.xyf.dto.AddCardDTO;
+import com.xyf.dto.UserPhoneDTO;
+import com.xyf.entity.Card;
 import com.xyf.service.card.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 木木
@@ -16,6 +20,7 @@ import java.util.Date;
  * @description
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class CardServiceImpl implements CardService {
 
     @Autowired
@@ -23,11 +28,23 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public MyResponse addCard(@Valid AddCardDTO dto) {
-        int i = cardDao.addCard(dto);
         dto.setCreateTime(new Date());
+        int i = cardDao.addCard(dto);
         if(i == 1){
             return new MyResponse();
         }
         return new MyResponse("添加信用卡失败，请重试",0);
+    }
+
+    /**
+     * 查询信用卡信息
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse cardList(UserPhoneDTO dto) {
+        List<Card> cardList = cardDao.cardList(dto);
+        return new MyResponse(cardList);
     }
 }

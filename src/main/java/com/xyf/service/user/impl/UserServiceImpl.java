@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ import java.util.List;
 
 
 @Service(value = "userService")
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -130,7 +132,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public MyResponse users(PageDTO dto) {
         PageHelper.startPage(dto.getPageNumber(), dto.getPageSize());
-        List<User> users = userDao.users();
+        List<User> users = userDao.users(dto);
         PageInfo result = new PageInfo(users);
         return new MyResponse(result);
     }

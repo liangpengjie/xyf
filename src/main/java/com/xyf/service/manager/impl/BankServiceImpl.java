@@ -8,10 +8,12 @@ import com.xyf.entity.manager.Bank;
 import com.xyf.service.manager.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service(value = "bankService")
+@Transactional(rollbackFor = Exception.class)
 public class BankServiceImpl implements BankService {
 
     @Autowired

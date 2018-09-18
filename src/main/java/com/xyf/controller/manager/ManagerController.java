@@ -61,5 +61,24 @@ public class ManagerController {
         return managerServiceService.initPartner(dto);
     }
 
+    /**
+     * 用户办卡成功返现奖励
+     * @param dto
+     * @return
+     */
+    @PostMapping("/initCreateCard")
+    public MyResponse initCreateCard(@RequestBody @Valid ListDTO dto) {
+        return managerServiceService.initCreateCard(dto);
+    }
+
+    /**
+     * 后台录入刷卡奖励
+     * @param dto
+     * @return
+     */
+    @PostMapping("/initUserCradBonus")
+    public MyResponse initUserCradBonus(@RequestBody @Valid ListDTO dto) {
+        return managerServiceService.initUserCradBonus(dto);
+    }
 
 }

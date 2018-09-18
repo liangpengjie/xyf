@@ -1,5 +1,7 @@
 package com.xyf.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -26,13 +28,14 @@ public class Card implements Serializable {
     // 卡余额
     private Double bankBonus;
     // 账单日
-    private Date statementDate;
+    private int statementDate;
     // 还款日
-    private Date repaymentDate;
+    private int repaymentDate;
 
     // 状态  0：未激活  1：激活    2：废弃
     private Integer status;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
     public String getIdNumber() {
@@ -115,19 +118,19 @@ public class Card implements Serializable {
         this.bankBonus = bankBonus;
     }
 
-    public Date getStatementDate() {
+    public int getStatementDate() {
         return statementDate;
     }
 
-    public void setStatementDate(Date statementDate) {
+    public void setStatementDate(int statementDate) {
         this.statementDate = statementDate;
     }
 
-    public Date getRepaymentDate() {
+    public int getRepaymentDate() {
         return repaymentDate;
     }
 
-    public void setRepaymentDate(Date repaymentDate) {
+    public void setRepaymentDate(int repaymentDate) {
         this.repaymentDate = repaymentDate;
     }
 }

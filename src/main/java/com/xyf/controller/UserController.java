@@ -96,7 +96,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/users")
-    public MyResponse users(PageDTO dto) {
+    public MyResponse users(@RequestBody @Valid PageDTO dto) {
         return userService.users(dto);
     }
 }

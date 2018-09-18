@@ -2,6 +2,7 @@ package com.xyf.controller;
 
 import com.xyf.common.MyResponse;
 import com.xyf.dto.AddCardDTO;
+import com.xyf.dto.UserPhoneDTO;
 import com.xyf.service.card.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,9 @@ public class CardController {
         return cardService.addCard(dto);
     }
 
-
+    @PostMapping("/cardList")
+    public MyResponse cardList(@RequestBody @Valid UserPhoneDTO dto){
+        return cardService.cardList(dto);
+    }
 
 }
