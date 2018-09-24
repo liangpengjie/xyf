@@ -4,6 +4,7 @@ package com.xyf.service.card;
 import com.xyf.common.MyResponse;
 import com.xyf.dto.AddCardDTO;
 import com.xyf.dto.UserPhoneDTO;
+import com.xyf.entity.Card;
 
 import javax.validation.Valid;
 
@@ -29,4 +30,12 @@ public interface CardService {
      * @return
      */
     MyResponse cardList(UserPhoneDTO dto);
+
+    /**
+     * 凭借信用卡id删除信用卡
+     *
+     * @param card
+     * @return
+     */
+    MyResponse delete(Card card);
 }

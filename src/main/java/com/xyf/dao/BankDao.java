@@ -13,4 +13,6 @@ public interface BankDao {
     int delete(DeleteBankDTO dto);
 
     List<Bank> list();
+
+    double getBonusByName(String bankName);
 }

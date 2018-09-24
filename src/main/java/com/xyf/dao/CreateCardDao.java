@@ -3,8 +3,10 @@ package com.xyf.dao;
 import com.xyf.dto.CreateCardInfoDTO;
 import com.xyf.entity.manager.CreateCardInfo;
 
+import java.util.List;
+
 public interface CreateCardDao {
     int CreateCardInfo(CreateCardInfoDTO dto);
 
-    CreateCardInfo getUserByPhone(String phone);
+    List<CreateCardInfo> getUserByPhone(String phone);
 }

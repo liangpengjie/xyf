@@ -25,7 +25,7 @@ public class BankController {
      * @return
      */
     @PostMapping("/add")
-    public MyResponse add(@RequestBody @Valid Bank bank) {
+    public MyResponse add(@RequestBody Bank bank) {
         return bankService.add(bank);
     }
 

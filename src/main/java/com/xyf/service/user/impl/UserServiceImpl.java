@@ -5,9 +5,12 @@ import com.github.pagehelper.PageInfo;
 import com.xyf.common.MD5Utils;
 import com.xyf.common.MyResponse;
 import com.xyf.common.SMSUtils;
+import com.xyf.dao.BankDao;
+import com.xyf.dao.CreateCardDao;
 import com.xyf.dao.UserDao;
 import com.xyf.dto.*;
 import com.xyf.entity.User;
+import com.xyf.entity.manager.CreateCardInfo;
 import com.xyf.service.user.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service(value = "userService")
@@ -32,6 +37,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private CreateCardDao createCardDao;
+    @Autowired
+    private BankDao bankDao;
 
     @Override
     public MyResponse addUser(AddUserDTO dto) {
@@ -136,6 +145,30 @@ public class UserServiceImpl implements UserService {
         PageInfo result = new PageInfo(users);
         return new MyResponse(result);
     }
+
+    /**
+     * 预计收益和实际收益
+     * 预计收益：
+     *      获取用户一共办了几张卡，将每个银行办卡成功奖励相加计算
+     * 实际收益：
+     *      自己办卡成功后的收益 + 推荐别人办卡成功后的奖励收益
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse expectedReturn(PhoneDTO dto) {
+        List<CreateCardInfo> users = createCardDao.getUserByPhone(dto.getPhone());
+        double expectedReturn = 0;
+        for (int i = 0; i < users.size(); i++) {
+            expectedReturn+= bankDao.getBonusByName(users.get(i).getBankName());
+        }
+        Map result = new HashMap(4);
+        result.put("expectedReturn",expectedReturn);
+        User user = userDao.getUserByPhone(dto.getPhone());
+        result.put("actualIncome",expectedReturn+user.getCreateCardBonus());
+        return new MyResponse(result);
+    }
+
 
     /**
      * 修改密码

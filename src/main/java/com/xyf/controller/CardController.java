@@ -3,6 +3,7 @@ package com.xyf.controller;
 import com.xyf.common.MyResponse;
 import com.xyf.dto.AddCardDTO;
 import com.xyf.dto.UserPhoneDTO;
+import com.xyf.entity.Card;
 import com.xyf.service.card.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,11 @@ public class CardController {
     @PostMapping("/cardList")
     public MyResponse cardList(@RequestBody @Valid UserPhoneDTO dto){
         return cardService.cardList(dto);
+    }
+
+    @PostMapping("/delete")
+    public MyResponse delete(@RequestBody @Valid Card card){
+        return cardService.delete(card);
     }
 
 }

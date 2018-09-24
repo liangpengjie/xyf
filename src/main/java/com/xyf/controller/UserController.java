@@ -99,4 +99,14 @@ public class UserController {
     public MyResponse users(@RequestBody @Valid PageDTO dto) {
         return userService.users(dto);
     }
+
+    /**
+     * 预计收益和实际收益
+     * @return
+     */
+    @PostMapping("/expectedReturn")
+    public MyResponse expectedReturn(@RequestBody @Valid PhoneDTO dto) {
+        return userService.expectedReturn(dto);
+    }
+
 }

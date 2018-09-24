@@ -14,4 +14,8 @@
     UPDATE manager_user set `password` = #{password} WHERE username = #{username}
   </update>
 
+  <delete id="delete" parameterType="com.xyf.entity.manager.ManagerUser">
+    delete from manager_user  where `username`=#{username}
+  </delete>
+
 </mapper>

@@ -2,6 +2,7 @@ package com.xyf.dao;
 
 import com.xyf.dto.ManagerDTO;
 import com.xyf.entity.manager.ManagerUser;
+import org.apache.catalina.Manager;
 
 public interface ManagerDao {
     int add(ManagerDTO dto);
@@ -9,4 +10,7 @@ public interface ManagerDao {
     ManagerUser login(ManagerDTO dto);
 
     int updatePassword(ManagerDTO dto);
+
+    int delete(ManagerUser manager);
+
 }

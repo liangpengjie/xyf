@@ -35,4 +35,8 @@ public interface UserDao {
     void updatereateCardBonusByPhone(Map map);
 
     void updateUseCardBonus(Map map);
+
+    List<User> selectSubordinate(Map map);
+
+    void updatCereateCardBonusByPId(Map map1);
 }

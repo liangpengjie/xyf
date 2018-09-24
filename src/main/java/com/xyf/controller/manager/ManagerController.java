@@ -2,7 +2,10 @@ package com.xyf.controller.manager;
 
 import com.xyf.common.MyResponse;
 import com.xyf.dto.InitPartnerDTO;
-import com.xyf.dto.*;
+import com.xyf.dto.ListDTO;
+import com.xyf.dto.LoginDTO;
+import com.xyf.dto.ManagerDTO;
+import com.xyf.entity.manager.ManagerUser;
 import com.xyf.service.manager.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 
 @RestController
@@ -52,6 +56,18 @@ public class ManagerController {
     }
 
     /**
+     * 删除管理员
+     * @return
+     */
+    @PostMapping("/delete")
+    public MyResponse delete(@RequestBody ManagerUser manager) {
+        return managerServiceService.delete(manager);
+    }
+
+
+
+
+    /**
      * 后台录入数据合伙人激活
      * @param dto
      * @return
@@ -81,4 +97,25 @@ public class ManagerController {
         return managerServiceService.initUserCradBonus(dto);
     }
 
+
+    /**
+     * 根据当前用户查看直属下级
+     * @param map
+     * @return
+     */
+    @PostMapping("/selectSubordinate")
+    public MyResponse selectSubordinate(@RequestBody Map map) {
+        return managerServiceService.selectSubordinate(map);
+    }
+
+
+    /**
+     * 合伙人登陆后台
+     * @param dto
+     * @return
+     */
+    @PostMapping("/userLogin")
+    public MyResponse userLogin(@RequestBody @Valid LoginDTO dto) {
+        return managerServiceService.userLogin(dto);
+    }
 }

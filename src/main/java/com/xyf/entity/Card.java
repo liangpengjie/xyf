@@ -17,6 +17,7 @@ public class Card implements Serializable {
     private String cardNumber;
     // 银行名
     private String bankName;
+    private Integer bankId;
     // 身份证
     private String idNumber;
     // 真实姓名
@@ -34,6 +35,14 @@ public class Card implements Serializable {
 
     // 状态  0：未激活  1：激活    2：废弃
     private Integer status;
+
+    public Integer getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(Integer bankId) {
+        this.bankId = bankId;
+    }
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;

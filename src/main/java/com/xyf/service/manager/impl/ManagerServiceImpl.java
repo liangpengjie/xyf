@@ -1,11 +1,12 @@
 package com.xyf.service.manager.impl;
 
 import com.xyf.common.MD5Utils;
+import com.xyf.common.MapUtils;
 import com.xyf.common.MyResponse;
 import com.xyf.dao.CreateCardDao;
-import com.xyf.dto.*;
 import com.xyf.dao.ManagerDao;
 import com.xyf.dao.UserDao;
+import com.xyf.dto.*;
 import com.xyf.entity.User;
 import com.xyf.entity.manager.CreateCardInfo;
 import com.xyf.entity.manager.ManagerUser;
@@ -83,6 +84,21 @@ public class ManagerServiceImpl implements ManagerService {
             return new MyResponse();
         }
         return new MyResponse("修改密码失败，请重试！", 0);
+    }
+
+    /**
+     * 删除管理员
+     *
+     * @param manager
+     * @return
+     */
+    @Override
+    public MyResponse delete(ManagerUser manager) {
+        int i = managerDao.delete(manager);
+        if (i == 1) {
+            return new MyResponse();
+        }
+        return new MyResponse("删除失败，请重试！", 0);
     }
 
     /**
@@ -188,33 +204,80 @@ public class ManagerServiceImpl implements ManagerService {
      */
     @Override
     public MyResponse initUserCradBonus(ListDTO dto) {
+        // 传入数据为空
         if (dto.getUseCardList() == null && dto.getUseCardList().isEmpty()) {
             return new MyResponse();
         }
         List<UseCardDTO> useCardList = dto.getUseCardList();
         for (UseCardDTO useCardDTO : useCardList) {
             User user = userDao.getUserByPhone(useCardDTO.getPhone());
+            /**
+             * 上级刷卡奖励
+             */
             Map map = new HashMap();
             // 一级上级为0.5收益
             if (user.getSuperior1() > 0) {
-                map.put("userId",user.getSuperior1());
-                map.put("money",useCardDTO.getUseCardCount() * 0.5);
+                map.put("userId", user.getSuperior1());
+                map.put("money", useCardDTO.getUseCardCount() * 0.5);
                 userDao.updateUseCardBonus(map);
             }
             // 二级上级为0.4收益
             if (user.getSuperior2() > 0) {
-                map.put("userId",user.getSuperior2());
-                map.put("money",useCardDTO.getUseCardCount() * 0.4);
+                map.put("userId", user.getSuperior2());
+                map.put("money", useCardDTO.getUseCardCount() * 0.4);
                 userDao.updateUseCardBonus(map);
             }
             // 三级上级为0.3收益
             if (user.getSuperior2() > 0) {
-                map.put("userId",user.getSuperior3());
-                map.put("money",useCardDTO.getUseCardCount() * 0.3);
+                map.put("userId", user.getSuperior3());
+                map.put("money", useCardDTO.getUseCardCount() * 0.3);
+                userDao.updateUseCardBonus(map);
+            }
+            /**
+             * 自身刷卡奖励
+             * 后台录入，用户电话，每次刷卡金额，pos机类型，刷卡次数，自身刷卡奖励（刷卡金额*返率=扣率-费率），并计算上级奖励
+             */
+            double moneys = 0;
+            for (int i = 0; i < useCardDTO.getMoneys().size(); i++) {
+                // 自身刷卡奖励（刷卡金额*返率=扣率-费率）
+                moneys += useCardDTO.getMoneys().get(i) * (useCardDTO.getDeductionate() - useCardDTO.getRate());
+            }
+            if (moneys > 0) {
+                map.put("userId", user.getUserId());
+                map.put("money", moneys);
                 userDao.updateUseCardBonus(map);
             }
         }
         return new MyResponse();
+    }
+
+    /**
+     * 根据当前用户查看直属下级
+     *
+     * @param map
+     * @return
+     */
+    @Override
+    public MyResponse selectSubordinate(Map map) {
+        List<User> result = userDao.selectSubordinate(map);
+        return new MyResponse(result);
+    }
+
+    /**
+     * 合伙人登陆后台
+     *
+     * @param dto
+     * @return`
+     */
+    @Override
+    public MyResponse userLogin(LoginDTO dto) {
+        User user = userDao.login(dto);
+        if (user == null) {
+            return new MyResponse("用户名或密码错误，请重新输入", 0);
+        }
+        Map<String, Object> result = MapUtils.objectToMap(user);
+        result.put("isManager", false);
+        return new MyResponse(result);
     }
 
     /**
@@ -230,17 +293,26 @@ public class ManagerServiceImpl implements ManagerService {
         }
         List<InitCreateCardDTO> initCreateCardList = dto.getInitCreateCardList();
         for (InitCreateCardDTO initCreateCardDTO : initCreateCardList) {
-            //获取是否记录用信息
-            CreateCardInfo createCardInfo = createCardDao.getUserByPhone(initCreateCardDTO.getPhone());
-            if (createCardInfo == null) {
+            // 获取是否记录用信息
+            List<CreateCardInfo> createCardInfos = createCardDao.getUserByPhone(initCreateCardDTO.getPhone());
+            if (createCardInfos == null) {
                 continue;
             }
-            //根据电话修改用户立即办卡奖励
-            Map map = new HashMap();
-            map.put("phone", createCardInfo.getPhone());
-            map.put("money", initCreateCardDTO.getMoney());
-            Integer userId = createCardInfo.getUserId();
-            userDao.updatereateCardBonusByPhone(map);
+            for (CreateCardInfo createCardInfo : createCardInfos) {
+                // 根据电话修改用户立即办卡奖励
+                Map map = new HashMap();
+                map.put("phone", createCardInfo.getPhone());
+                map.put("money", initCreateCardDTO.getBankBonus());
+                Integer userId = createCardInfo.getUserId();
+                map.put("userId", userId);
+                userDao.updatereateCardBonusByPhone(map);
+                // 修改推荐人奖励
+                User user = userDao.getUserByPhone(initCreateCardDTO.getPhone());
+                Map map1 = new HashMap();
+                map.put("userId", user.getSuperior1());
+                map.put("money", initCreateCardDTO.getSuperiorBonus());
+                userDao.updatCereateCardBonusByPId(map1);
+            }
         }
         return new MyResponse();
     }

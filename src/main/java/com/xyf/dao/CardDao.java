@@ -16,4 +16,6 @@ public interface CardDao {
     int addCard(AddCardDTO dto);
 
     List<Card> cardList(UserPhoneDTO dto);
+
+    int delete(Card card);
 }

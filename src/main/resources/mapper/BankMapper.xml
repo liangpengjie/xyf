@@ -3,11 +3,11 @@
 <mapper namespace="com.xyf.dao.BankDao" >
 
   <insert id="add" parameterType="com.xyf.entity.manager.Bank">
-    INSERT into bank (bank_name,bank_bonus) VALUES ( #{bankName},#{bankBonus})
+    INSERT into bank (bank_name,bank_bonus,superior_bonus,img) VALUES ( #{bankName},#{bankBonus},#{superiorBonus},#{img})
   </insert>
 
   <update id="edit" parameterType="com.xyf.entity.manager.Bank">
-    update bank set bank_name = #{bankName}, bank_bonus = #{bankBonus} where bank_id = #{bankId}
+    update bank set bank_name = #{bankName}, bank_bonus = #{bankBonus},superior_bonus=#{superiorBonus},img = #{img} where bank_id = #{bankId}
   </update>
 
   <delete id="delete" parameterType="com.xyf.dto.DeleteBankDTO">
@@ -15,7 +15,11 @@
   </delete>
 
   <select id="list" resultType="com.xyf.entity.manager.Bank">
-    select bank_id bankId,bank_name bankName,bank_bonus bankBonus from bank
+    select bank_id bankId,bank_name bankName,bank_bonus bankBonus,superior_bonus superiorBonus,img img from bank
+  </select>
+
+  <select id="getBonusByName" parameterType="java.lang.String" resultType="java.lang.Double">
+    select bank_bonus bankBonus from bank where bank_name = #{bankName}
   </select>
 
 </mapper>

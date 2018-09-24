@@ -31,7 +31,7 @@ public class User implements Serializable {
     private Integer superior2;
     // 三级上线
     private Integer superior3;
-    //  用户等级    0：普通用户    1：银牌代理     2：金牌代理    3： 钻石代理
+    //  用户等级    0：普通用户  9:合伙人  1：银牌代理     2：金牌代理    3： 钻石代理
     private Integer level;
     private Date createTime;
 

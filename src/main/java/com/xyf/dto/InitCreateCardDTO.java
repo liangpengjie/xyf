@@ -6,8 +6,12 @@ public class InitCreateCardDTO {
 
     @NotNull
     private String phone;
+    /** 自身办卡奖励*/
     @NotNull
-    private double money;
+    private Double bankBonus;
+    /** 直接推荐人奖励*/
+    @NotNull
+    private double superiorBonus;
 
     public String getPhone() {
         return phone;
@@ -17,11 +21,19 @@ public class InitCreateCardDTO {
         this.phone = phone;
     }
 
-    public double getMoney() {
-        return money;
+    public Double getBankBonus() {
+        return bankBonus;
     }
 
-    public void setMoney(double money) {
-        this.money = money;
+    public void setBankBonus(Double bankBonus) {
+        this.bankBonus = bankBonus;
+    }
+
+    public double getSuperiorBonus() {
+        return superiorBonus;
+    }
+
+    public void setSuperiorBonus(double superiorBonus) {
+        this.superiorBonus = superiorBonus;
     }
 }

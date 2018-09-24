@@ -37,7 +37,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
          *
          */
         //读取配置文件中的上传路径
-        registry.addResourceHandler("/file/**").addResourceLocations("file:" + url);
+        registry.addResourceHandler("/imgs/**").addResourceLocations("file:" + url);
         super.addResourceHandlers(registry);
     }
 }

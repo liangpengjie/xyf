@@ -68,4 +68,13 @@ public interface UserService {
      * @return
      */
     MyResponse users(PageDTO dto);
+
+    /**
+     * 预计收益
+     * @param dto
+     * @return
+     */
+    MyResponse expectedReturn(PhoneDTO dto);
+
+
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.PosJiDao" >
+
+  <insert id="add" parameterType="com.xyf.entity.PosJi">
+    INSERT INTO `wei`.`posji`
+    (`pos_id`, `pos_name`, `rate`, `deductionate`, `detil_text`, `detil_img`, `instructions4Use`, `identifier`)
+    VALUES (#{posId}, #{posName}, #{rate}, #{deductionate}, #{detilText}, #{detilImg}, #{instructions4Use}, #{identifier})
+  </insert>
+
+  <update id="edit" parameterType="com.xyf.entity.PosJi">
+    UPDATE `wei`.`posji`
+    SET `pos_name`=#{posName}, `rate`=#{rate}, `deductionate`=#{deductionate}, `detil_text`=#{detilText}, `detil_img`=#{detilImg}, `instructions4Use`=#{instructions4Use}, `identifier`=#{identifier}
+    WHERE (`pos_id`=#{posId})
+  </update>
+
+  <delete id="delete" parameterType="com.xyf.entity.PosJi">
+    delete from `wei`.`posji`  where `pos_id`=#{posId}
+  </delete>
+
+  <select id="list" resultType="com.xyf.entity.PosJi">
+    select `pos_id` posId, `pos_name` posName, `rate` rate, `deductionate` deductionate, `detil_text` detilText, `detil_img` detilImg, `instructions4Use` instructions4Use, `identifier` identifier
+    from `wei`.`posji`
+  </select>
+
+  <select id="selectById" parameterType="com.xyf.entity.PosJi" resultType="com.xyf.entity.PosJi">
+    select `pos_id` posId, `pos_name` posName, `rate` rate, `deductionate` deductionate, `detil_text` detilText, `detil_img` detilImg, `instructions4Use` instructions4Use, `identifier` identifier
+    from `wei`.`posji` WHERE `pos_id`=#{posId}
+  </select>
+
+</mapper>

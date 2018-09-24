@@ -47,4 +47,19 @@ public class CardServiceImpl implements CardService {
         List<Card> cardList = cardDao.cardList(dto);
         return new MyResponse(cardList);
     }
+
+    /**
+     * 凭借信用卡id删除信用卡
+     *
+     * @param card
+     * @return
+     */
+    @Override
+    public MyResponse delete(Card card) {
+        int i = cardDao.delete(card);
+        if(i == 1){
+            return new MyResponse();
+        }
+        return new MyResponse("删除信用卡失败，请重试",0);
+    }
 }

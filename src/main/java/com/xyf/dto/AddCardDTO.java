@@ -17,6 +17,8 @@ public class AddCardDTO {
     @NotNull
     private String bankName;
     @NotNull
+    private String bankId;
+    @NotNull
     private Integer cardUserId;
     @NotNull
     @Min(1)
@@ -29,6 +31,14 @@ public class AddCardDTO {
 
     /** 状态  0：未激活  1：激活    2：废弃 */
     private Integer status = 1;
+
+    public String getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(String bankId) {
+        this.bankId = bankId;
+    }
 
     private Date createTime;
 
