@@ -39,4 +39,8 @@ public interface UserDao {
     List<User> selectSubordinate(Map map);
 
     void updatCereateCardBonusByPId(Map map1);
+
+    List<User> selectLevelId(Integer userId);
+
+    void updateCashBackBonus(CashEarningsDTO dto);
 }

@@ -1,21 +1,25 @@
 package com.xyf.controller.manager;
 
 import com.xyf.common.MyResponse;
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.io.InputStreamReader;
+import java.util.*;
 
+@CrossOrigin
 @RestController
 public class UploadImg {
     private static final Logger logger = LoggerFactory.getLogger(UploadImg.class);
@@ -27,13 +31,12 @@ public class UploadImg {
     //文件上传相关代码
     @RequestMapping(value = "web/api/manager/upload")
     @ResponseBody
-    public MyResponse upload(@RequestParam("image-file") MultipartFile file) {
+    public MyResponse upload(@RequestBody MultipartFile file) {
         if (file.isEmpty()) {
             return new MyResponse("文件为空",0);
         }
         // 获取文件名
         String fileName = file.getOriginalFilename();
-        logger.info("上传的文件名为：" + fileName);
         // 获取文件的后缀名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         UUID uuid = UUID.randomUUID();
@@ -56,4 +59,5 @@ public class UploadImg {
         }
         return new MyResponse("上传失败",0);
     }
+
 }

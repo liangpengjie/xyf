@@ -70,11 +70,17 @@ public interface UserService {
     MyResponse users(PageDTO dto);
 
     /**
-     * 预计收益
+     * 预计收益和实际收益
      * @param dto
      * @return
      */
     MyResponse expectedReturn(PhoneDTO dto);
 
 
+    /**
+     * 提现收益
+     * @param dto
+     * @return
+     */
+    MyResponse cashEarnings(CashEarningsDTO dto);
 }

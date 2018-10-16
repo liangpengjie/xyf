@@ -6,10 +6,12 @@ import com.xyf.common.MD5Utils;
 import com.xyf.common.MyResponse;
 import com.xyf.common.SMSUtils;
 import com.xyf.dao.BankDao;
+import com.xyf.dao.CacheBackDao;
 import com.xyf.dao.CreateCardDao;
 import com.xyf.dao.UserDao;
 import com.xyf.dto.*;
 import com.xyf.entity.User;
+import com.xyf.entity.manager.CacheBack;
 import com.xyf.entity.manager.CreateCardInfo;
 import com.xyf.service.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +43,8 @@ public class UserServiceImpl implements UserService {
     private CreateCardDao createCardDao;
     @Autowired
     private BankDao bankDao;
+    @Autowired
+    private CacheBackDao cacheBackDao;
 
     @Override
     public MyResponse addUser(AddUserDTO dto) {
@@ -149,9 +153,10 @@ public class UserServiceImpl implements UserService {
     /**
      * 预计收益和实际收益
      * 预计收益：
-     *      获取用户一共办了几张卡，将每个银行办卡成功奖励相加计算
+     * 获取用户一共办了几张卡，将每个银行办卡成功奖励相加计算
      * 实际收益：
-     *      自己办卡成功后的收益 + 推荐别人办卡成功后的奖励收益
+     * 自己办卡成功后的收益 + 推荐别人办卡成功后的奖励收益
+     *
      * @param dto
      * @return
      */
@@ -160,13 +165,94 @@ public class UserServiceImpl implements UserService {
         List<CreateCardInfo> users = createCardDao.getUserByPhone(dto.getPhone());
         double expectedReturn = 0;
         for (int i = 0; i < users.size(); i++) {
-            expectedReturn+= bankDao.getBonusByName(users.get(i).getBankName());
+            expectedReturn += bankDao.getBonusByName(users.get(i).getBankName());
         }
         Map result = new HashMap(4);
-        result.put("expectedReturn",expectedReturn);
+        result.put("expectedReturn", expectedReturn);
         User user = userDao.getUserByPhone(dto.getPhone());
-        result.put("actualIncome",expectedReturn+user.getCreateCardBonus());
+        result.put("actualIncome", expectedReturn + user.getCreateCardBonus());
         return new MyResponse(result);
+    }
+
+    /**
+     * 提现收益
+     * 获取用户上级，提现金额必须超过120元，扣除20%作为平台收益及推广收益
+     * 20%收益归属：
+     * 钻石级别收益为80%，金牌级别为40%，银牌级别为20%
+     * 只有自身等级高于下级等级才能拿到收益
+     * 以上级最高等级为封顶,高等级收益减去低级收益为自身收益，剩下的归平台所有
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse cashEarnings(CashEarningsDTO dto) {
+        List<User> users = userDao.selectLevelId(dto.getUserId());
+        // 20% 手续费交给平台和合伙人
+        double money = dto.getCashEarningsMoney() * 0.8;
+        dto.setCashEarningsMoney(money);
+        userDao.updateCashBackBonus(dto);
+        // 如果不是合伙人剩余 20% 交给平台和合伙人
+        User u = userDao.getUserById(dto.getUserId());
+        // 获取为代理的上级用户
+        if (u.getSuperior1() > 0 && u.getSuperior1() != 9) {
+            User u1 = userDao.getUserById(u.getSuperior1());
+            if (u1.getLevel() == 1) {
+                dto.setUserId(u1.getUserId());
+                dto.setCashEarningsMoney(money * 0.2);
+                userDao.updateCashBackBonus(dto);
+            }
+
+            if (u.getSuperior2() > 0 && u.getSuperior2() != 9) {
+                User u2 = userDao.getUserById(u.getSuperior1());
+                if (u2.getLevel() > u1.getLevel()) {
+
+                    if (u.getSuperior3() > 0 && u.getSuperior3() != 9) {
+                        User u3 = userDao.getUserById(u.getSuperior1());
+                        if (u3.getLevel() > u2.getLevel()) {
+
+                        }
+                    }
+                }
+            }
+        }
+//        if (u1.getLevel() == 0 || u1.getLevel()== 9) {
+//            cacheBackDao.add(new CacheBack(new Date(),u1.getUserId(),money));
+//        }
+//        //
+//        if(u1.getSuperior1() == 1){
+//            if(u1.getSuperior2() == 2){
+//                if(u1.getSuperior3() == 3){
+//                    dto.setUserId(u1.getSuperior3());
+//                    dto.setCashEarningsMoney(money*0.4);
+//                    userDao.updateCashBackBonus(dto);
+//                    cacheBackDao.add(new CacheBack(new Date(),u1.getUserId(),money*0.2));
+//                }
+//                dto.setUserId(u1.getSuperior2());
+//                dto.setCashEarningsMoney(money*0.2);
+//                userDao.updateCashBackBonus(dto);
+//                cacheBackDao.add(new CacheBack(new Date(),u1.getUserId(),money*0.6));
+//            }
+//            dto.setUserId(u1.getSuperior1());
+//            dto.setCashEarningsMoney(money*0.2);
+//            userDao.updateCashBackBonus(dto);
+//        }
+//        for (User user : users) {
+//            if(user.getUserId().equals(dto.getUserId())){
+//                Integer superior1 = user.getSuperior1();
+//                for(User u : users) {
+//                    if (u.getUserId().equals(superior1)) {
+//                        if (u.getLevel() == 1) {
+//                            dto.setUserId(u.getUserId());
+//                            dto.setCashEarningsMoney(money*0.2);
+//                            userDao.updateCashBackBonus(dto);
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
+        return null;
     }
 
 

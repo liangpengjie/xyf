@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.MultipartConfigElement;
@@ -24,7 +26,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         //文件最大KB,MB
         factory.setMaxFileSize("2MB");
         //设置总上传数据总大小
-        factory.setMaxRequestSize("10MB");
+        factory.setMaxRequestSize("100MB");
         return factory.createMultipartConfig();
     }
 
@@ -39,5 +41,19 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         //读取配置文件中的上传路径
         registry.addResourceHandler("/imgs/**").addResourceLocations("file:" + url);
         super.addResourceHandlers(registry);
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry
+                        .addMapping("/**")
+                        .allowedMethods("*")
+                        .allowedOrigins("*")
+                        .allowedHeaders("*");
+            }
+        };
     }
 }

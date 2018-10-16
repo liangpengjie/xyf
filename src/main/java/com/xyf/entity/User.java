@@ -25,6 +25,8 @@ public class User implements Serializable {
     private Double createCardBonus;
     // 刷卡奖金
     private Double useCardBonus;
+    // 刷卡返现收益
+    private Double cashBackBonus;
     // 一级上线
     private Integer superior1;
     // 二级上线
@@ -34,6 +36,14 @@ public class User implements Serializable {
     //  用户等级    0：普通用户  9:合伙人  1：银牌代理     2：金牌代理    3： 钻石代理
     private Integer level;
     private Date createTime;
+
+    public Double getCashBackBonus() {
+        return cashBackBonus;
+    }
+
+    public void setCashBackBonus(Double cashBackBonus) {
+        this.cashBackBonus = cashBackBonus;
+    }
 
     public Double getCreateCardBonus() {
         return createCardBonus;

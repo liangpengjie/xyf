@@ -53,7 +53,6 @@
          from `user` WHERE user_id=#{userId}
    </select>
 
-
     <select id="users" resultType="com.xyf.entity.User" parameterType="com.xyf.dto.PageDTO">
         SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus,
         `level`, `create_time` createTime, `create_card_bonus` createCardBonus from `user`
@@ -77,5 +76,16 @@
     <update id="updateUseCardBonus" parameterType="java.util.Map">
       UPDATE `user` set use_card_bonus = use_card_bonus + #{money} WHERE user_id = ${userId}
     </update>
+
+    <update id="updateCashBackBonus" parameterType="com.xyf.dto.CashEarningsDTO">
+      UPDATE `user` set user_bonus= user_bonus + #{cashEarningsMoney} WHERE user_id = ${userId}
+    </update>
+
+    <select id="selectLevelId" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
+        SELECT u.user_id userId,u.superior1,u.superior2,u.superior3,u.level from `user` u LEFT JOIN
+        (SELECT user_id,superior1,superior2,superior3,level from `user`)
+         v on u.user_id = v.user_id OR u.user_id = v.superior1 OR
+         u.user_id = v.superior2 OR u.user_id = v.superior3 WHERE v.user_id = #{userId} order by u.user_id
+    </select>
 
 </mapper>

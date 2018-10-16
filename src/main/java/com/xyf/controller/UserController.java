@@ -109,4 +109,13 @@ public class UserController {
         return userService.expectedReturn(dto);
     }
 
+    /**
+     * 提现收益
+     * @return
+     */
+    @PostMapping("/cashEarnings")
+    public MyResponse cashEarnings(@RequestBody @Valid CashEarningsDTO dto) {
+        return userService.cashEarnings(dto);
+    }
+
 }
