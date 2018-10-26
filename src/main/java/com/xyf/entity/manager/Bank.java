@@ -1,9 +1,11 @@
 package com.xyf.entity.manager;
 
+import javax.persistence.Id;
 import java.io.Serializable;
 
 public class Bank implements Serializable {
 
+    @Id
     private Integer bankId;
     private String bankName;
     /** 推荐人返现奖励金额推荐人返现奖励金额,相加计算*/
@@ -12,6 +14,20 @@ public class Bank implements Serializable {
     private double superiorBonus;
     /** 图片存储路径*/
     private String img;
+    // 立即办卡连接
+    private String urlCreateCard;
+    // 立即办卡连接
+    private String urlPlanQuery;
+    // 奖励条件
+    private String rewardConditions;
+
+    public String getRewardConditions() {
+        return rewardConditions;
+    }
+
+    public void setRewardConditions(String rewardConditions) {
+        this.rewardConditions = rewardConditions;
+    }
 
     public String getImg() {
         return img;
@@ -51,5 +67,21 @@ public class Bank implements Serializable {
 
     public void setBankBonus(Double bankBonus) {
         this.bankBonus = bankBonus;
+    }
+
+    public String getUrlCreateCard() {
+        return urlCreateCard;
+    }
+
+    public void setUrlCreateCard(String urlCreateCard) {
+        this.urlCreateCard = urlCreateCard;
+    }
+
+    public String getUrlPlanQuery() {
+        return urlPlanQuery;
+    }
+
+    public void setUrlPlanQuery(String urlPlanQuery) {
+        this.urlPlanQuery = urlPlanQuery;
     }
 }

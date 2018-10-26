@@ -32,6 +32,8 @@ public interface UserDao {
 
     List<User> users(PageDTO dto);
 
+    List<User> getUsersByIds(List list);
+
     void updatereateCardBonusByPhone(Map map);
 
     void updateUseCardBonus(Map map);
@@ -43,4 +45,5 @@ public interface UserDao {
     List<User> selectLevelId(Integer userId);
 
     void updateCashBackBonus(CashEarningsDTO dto);
+
 }

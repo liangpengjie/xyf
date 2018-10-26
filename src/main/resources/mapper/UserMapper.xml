@@ -22,6 +22,20 @@
         FROM USER WHERE phone = #{phone}
     </select>
 
+    <select id="getUserById" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        FROM USER WHERE user_id=#{superior1}
+    </select>
+    
+    <select id="getUsersByIds" parameterType="java.util.List" resultType="com.xyf.entity.User">
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        FROM USER WHERE user_id in
+        <foreach item="id" index="index" collection="list" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        order by user_id
+    </select>
+
     <update id="updatePassword" parameterType="com.xyf.dto.LoginDTO">
         UPDATE `user` set `password` = #{password} WHERE phone = #{phone}
     </update>
@@ -49,7 +63,7 @@
     </select>
 
     <select id="selectUserInfo" parameterType="com.xyf.dto.UserPhoneDTO" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_card_bonus` createCardBonus
          from `user` WHERE user_id=#{userId}
    </select>
 

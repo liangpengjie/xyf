@@ -55,7 +55,7 @@ public class BankServiceImpl implements BankService {
      */
     @Override
     public MyResponse delete(DeleteBankDTO dto) {
-        int i = bankDao.delete(dto);
+        int i = bankDao.deletes(dto);
         if (i == 1) {
             return new MyResponse();
         }

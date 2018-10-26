@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.MoneyLogDao" >
+    <resultMap id="BaseResultMap" type="com.xyf.entity.MoneyLog">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="money" property="money" jdbcType="DECIMAL"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="from_user_id" property="fromUserId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.xyf.entity.MoneyLog" >
+        INSERT INTO `wei`.`money_log`
+        (`user_id`, `money`, `status`, `type`, `from_user_id`)
+        VALUES (#{userId}, #{money}, #{status}, #{type}, #{fromUserId});
+    </insert>
+
+    <insert id="addList" parameterType="com.xyf.entity.MoneyLog" >
+        INSERT INTO `wei`.`money_log`
+        (`user_id`, `money`, `status`, `type`, `from_user_id`)
+        VALUES
+        <foreach collection="moneyLogs" item="moneyLog" index= "index" separator =",">
+          (#{moneyLog.userId}, #{moneyLog.money}, #{moneyLog.status}, #{moneyLog.type}, #{moneyLog.fromUserId});
+        </foreach>
+    </insert>
+
+</mapper>
