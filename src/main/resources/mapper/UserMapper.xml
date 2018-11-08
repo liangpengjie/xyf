@@ -13,22 +13,22 @@
     </select>
 
     <select id="login" parameterType="com.xyf.dto.LoginDTO" resultType="com.xyf.entity.User">
-        SELECT`user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        SELECT`user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
          from `user` WHERE phone=#{phone} AND password = #{password}
     </select>
 
     <select id="getUserByPhone" parameterType="String" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
         FROM USER WHERE phone = #{phone}
     </select>
 
     <select id="getUserById" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
         FROM USER WHERE user_id=#{superior1}
     </select>
     
     <select id="getUsersByIds" parameterType="java.util.List" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
         FROM USER WHERE user_id in
         <foreach item="id" index="index" collection="list" separator="," open="(" close=")">
             #{id}
@@ -53,23 +53,23 @@
     </update>
 
     <select id="getSuperior" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
          from `user` WHERE user_id=#{superior1}
     </select>
 
     <select id="selectSubordinate" parameterType="java.util.Map" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
          from `user` WHERE superior1 = #{userId}
     </select>
 
     <select id="selectUserInfo" parameterType="com.xyf.dto.UserPhoneDTO" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_card_bonus` createCardBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
          from `user` WHERE user_id=#{userId}
    </select>
 
     <select id="users" resultType="com.xyf.entity.User" parameterType="com.xyf.dto.PageDTO">
         SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus,
-        `level`, `create_time` createTime, `create_card_bonus` createCardBonus from `user`
+        `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus from `user`
         where 1=1
         <if test="phone != null">
             AND phone LIKE "%"#{phone}"%"

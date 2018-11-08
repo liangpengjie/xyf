@@ -12,7 +12,6 @@ import java.net.URLEncoder;
 /**
  * @author 木木
  * @date 2018/8/30 13:37
- * @description
  */
 public class SMSUtils {
     private static final Logger log = LoggerFactory.getLogger(SMSUtils.class);
@@ -23,7 +22,7 @@ public class SMSUtils {
     private static final String prefix = "【鑫银付】您的验证码为：";
 
 
-    /*
+    /**
      * 发送方法信息
      */
     public static int sendSMS(String Mobile, String Content, String send_time) {
@@ -32,7 +31,8 @@ public class SMSUtils {
         BufferedReader in = null;
         try {
             Content = prefix+Content+suffix;
-            String send_content = URLEncoder.encode(Content.replaceAll("<br/>", " "), "GBK");//发送内容
+            //发送内容
+            String send_content = URLEncoder.encode(Content.replaceAll("<br/>", " "), "GBK");
             url = new URL("  http://47.104.193.175/ws/Send.aspx?CorpID=" + username + "&Pwd=" + psd +
                     "&Mobile=" + Mobile + "&Content=" + send_content + "&Cell=&SendTime=" + send_time);
             log.info("开始发送短信手机号码为 ：" + Mobile);

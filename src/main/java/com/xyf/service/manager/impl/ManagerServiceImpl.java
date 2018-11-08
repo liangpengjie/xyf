@@ -70,6 +70,7 @@ public class ManagerServiceImpl implements ManagerService {
         return new MyResponse(user);
     }
 
+
     /**
      * 修改密码
      *
@@ -113,6 +114,9 @@ public class ManagerServiceImpl implements ManagerService {
     public MyResponse initPartner(InitPartnerDTO dto) {
         try {
             User user = userDao.getUserByPhone(dto.getPhone());
+            if (user.getLevel() > 0) {
+                return new MyResponse("已经激活合伙人",0);
+            }
             //更改用户等级并返现余额199
             dto.setBonus(199D);
             int i = userDao.updateUserLevel(dto);
@@ -123,7 +127,7 @@ public class ManagerServiceImpl implements ManagerService {
             if (user.getSuperior1() > 0) {
                 User superior1 = userDao.getSuperior(user.getSuperior1());
                 //如果一级上级为钻石代理则钻石代理拿80元
-                if (user.getLevel() == 3) {
+                if (superior1.getLevel() == 3 ) {
                     dto.setPhone(superior1.getPhone());
                     dto.setMonery(80);
                     int i1 = userDao.updateUserBonus(dto);
@@ -282,9 +286,6 @@ public class ManagerServiceImpl implements ManagerService {
 
     /**
      * 用户办卡成功返现奖励
-     *
-     * @param dto
-     * @return
      */
     @Override
     public MyResponse initCreateCard(ListDTO dto) {

@@ -18,6 +18,16 @@ public class PosJi implements Serializable {
     private String instructions4Use;
     /** 标识符地址*/
     private String identifier;
+    /** 算算省多少*/
+    private double saveHowMoney;
+
+    public double getSaveHowMoney() {
+        return saveHowMoney;
+    }
+
+    public void setSaveHowMoney(double saveHowMoney) {
+        this.saveHowMoney = saveHowMoney;
+    }
 
     public Integer getPosId() {
         return posId;

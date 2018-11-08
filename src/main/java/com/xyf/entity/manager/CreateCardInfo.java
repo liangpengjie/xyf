@@ -1,5 +1,7 @@
 package com.xyf.entity.manager;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,8 +12,27 @@ public class CreateCardInfo implements Serializable {
     private String phone;
     private String realName;
     private String bankName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     private Integer status;
+    private double superiorBonus;
+    private double bankBonus;
+
+    public double getBankBonus() {
+        return bankBonus;
+    }
+
+    public void setBankBonus(double bankBonus) {
+        this.bankBonus = bankBonus;
+    }
+
+    public double getSuperiorBonus() {
+        return superiorBonus;
+    }
+
+    public void setSuperiorBonus(double superiorBonus) {
+        this.superiorBonus = superiorBonus;
+    }
 
     public String getIdNumber() {
         return idNumber;

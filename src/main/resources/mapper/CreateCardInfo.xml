@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xyf.dao.CreateCardDao" >
+<mapper namespace="com.xyf.dao.CreateCardDao">
 
 
     <insert id="CreateCardInfo" parameterType="com.xyf.dto.CreateCardInfoDTO">
@@ -14,5 +14,15 @@
         user_id userId,id_number idNumber,real_name realName,bank_name bankName,create_time createTime,`status` status,phone phone
         FROM createcardinfo where phone =#{phone}
     </select>
+
+    <select id="createCardInfoList" resultType="com.xyf.entity.manager.CreateCardInfo">
+        SELECT
+        c.user_id userId,c.id_number idNumber,c.real_name realName,b.bank_name bankName,c.create_time createTime,c.`status` status,c.phone phone,b.superior_bonus superiorBonus,b.bank_bonus bankBonus
+        FROM createcardinfo c,bank b WHERE c.bank_name = b.bank_id
+    </select>
+
+    <update id="updateStatus" parameterType="java.util.Map">
+      UPDATE `createcardinfo` set status= #{status} WHERE user_id = ${userId}
+    </update>
 
 </mapper>

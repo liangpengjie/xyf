@@ -14,7 +14,7 @@ public class AddCardDTO {
 
     @NotNull
     private String cardNumber;
-    @NotNull
+
     private String bankName;
     @NotNull
     private String bankId;

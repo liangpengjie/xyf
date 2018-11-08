@@ -83,4 +83,11 @@ public interface UserService {
      * @return
      */
     MyResponse cashEarnings(CashEarningsDTO dto);
+
+    /**
+     * 立即办卡激活奖励
+     * @param dto
+     * @return
+     */
+    MyResponse initCard(InitCardDTO dto);
 }

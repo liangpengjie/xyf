@@ -16,6 +16,8 @@ public class CreateCardInfoDTO {
     @NotNull
     private String bankName;
 
+    private Date createTime;
+
     public String getBankName() {
         return bankName;
     }
@@ -24,7 +26,6 @@ public class CreateCardInfoDTO {
         this.bankName = bankName;
     }
 
-    private Date createTime;
 
     public String getPhone() {
         return phone;

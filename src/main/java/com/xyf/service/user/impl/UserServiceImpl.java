@@ -6,15 +6,14 @@ import com.xyf.common.MD5Utils;
 import com.xyf.common.MyResponse;
 import com.xyf.common.SMSUtils;
 import com.xyf.common.constant.MoneyLogConstant;
-import com.xyf.dao.BankDao;
-import com.xyf.dao.CreateCardDao;
-import com.xyf.dao.MoneyLogDao;
-import com.xyf.dao.UserDao;
+import com.xyf.dao.*;
 import com.xyf.dto.*;
 import com.xyf.entity.MoneyLog;
+import com.xyf.entity.PosJi;
 import com.xyf.entity.User;
 import com.xyf.entity.manager.CreateCardInfo;
 import com.xyf.service.user.UserService;
+import javafx.geometry.Pos;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,8 +185,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public MyResponse cashEarnings(CashEarningsDTO dto) {
         // 20% 手续费交给平台和合伙人.自身得 80%
-        double money = dto.getCashEarningsMoney() * 0.8;
-        dto.setCashEarningsMoney(money);
+        double money = dto.getCashEarningsMoney() * 0.2;
+        dto.setCashEarningsMoney(dto.getCashEarningsMoney() * 0.8);
         userDao.updateCashBackBonus(dto);
 
         User u = userDao.getUserById(dto.getUserId());
@@ -200,174 +199,101 @@ public class UserServiceImpl implements UserService {
         User u1 = users.get(0);
         User u2 = users.get(1);
         User u3 = users.get(2);
-
-
-        // 1级上级为银牌代理，1级代理 20%
-        if (u1.getLevel() == 1 && u2.getLevel() != 2 && u2.getLevel() != 3 && u3.getLevel() != 2 && u3.getLevel() != 3) {
-            dto.setUserId(u1.getUserId());
-            dto.setCashEarningsMoney(money * 0.2);
-            userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.8, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            List<MoneyLog> moneyLogs = new ArrayList<>();
-            moneyLogs.add(yonghulog);
-            moneyLogs.add(pingtailog);
-            moneyLogDao.addList(moneyLogs);
-        }
-
-        // 1级上级为银牌代理，2级上级为金牌代理   1级代理 20%，2级代理 20%
-        if (u1.getLevel() == 1 && u2.getLevel() == 2 && u3.getLevel() != 3) {
-            // 修改 u1 的提现奖励
-            dto.setUserId(u1.getUserId());
-            dto.setCashEarningsMoney(money * 0.2);
-            // 修改 u2 的提现奖励
-            userDao.updateCashBackBonus(dto);
-            dto.setUserId(u2.getUserId());
-            userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            List<MoneyLog> moneyLogs = new ArrayList<>();
-            moneyLogs.add(yonghulog);
-            moneyLogs.add(yonghulog2);
-            moneyLogs.add(pingtailog);
-            moneyLogDao.addList(moneyLogs);
-        }
-
-
-        // 1级上级为银牌代理，2级上级为金牌代理，3级上级为钻石代理   1级代理 20%，2级代理 20%，3级代理 40%
-        if (u1.getLevel() == 1 && u2.getLevel() == 2) {
-            // 修改 u1 的提现奖励
-            dto.setUserId(u1.getUserId());
-            dto.setCashEarningsMoney(money * 0.2);
-            // 修改 u2 的提现奖励
-            userDao.updateCashBackBonus(dto);
-            dto.setUserId(u2.getUserId());
-            userDao.updateCashBackBonus(dto);
-            // 修改 u3 的提现奖励
-            MoneyLog yonghulog = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.8, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            List<MoneyLog> moneyLogs = new ArrayList<>();
-            moneyLogs.add(yonghulog);
-            moneyLogs.add(yonghulog2);
-            moneyLogs.add(pingtailog);
-            moneyLogDao.addList(moneyLogs);
-        }
-        // 直接上级为银牌代理
+        List<MoneyLog> moneyLogs = new ArrayList<>();
         if (u1.getLevel() == 1) {
-            dto.setUserId(u1.getUserId());
-            dto.setCashEarningsMoney(money * 0.2);
-            userDao.updateCashBackBonus(dto);
-            moneyLogDao.add(new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId()));
-
-            MoneyLog yonghulog = new MoneyLog(u3.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.8, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            List<MoneyLog> moneyLogs = new ArrayList<>();
-            moneyLogs.add(yonghulog);
-            moneyLogs.add(pingtailog);
-            moneyLogDao.addList(moneyLogs);
-
-            // 二级上级为金牌代理
             if (u2.getLevel() == 2) {
-                dto.setUserId(u2.getUserId());
-                dto.setCashEarningsMoney(money * 0.2);
-                userDao.updateCashBackBonus(dto);
-                moneyLogDao.add(new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId()));
-
-                // 三级上级为钻石代理
                 if (u3.getLevel() == 3) {
                     dto.setUserId(u3.getUserId());
                     dto.setCashEarningsMoney(money * 0.4);
                     userDao.updateCashBackBonus(dto);
-                    moneyLogDao.add(new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId()));
+                    MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                    MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                    MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                    MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                    MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
+                    moneyLogs = Arrays.asList(yonghu,yonghulog1,yonghulog2,yonghulog3,pingtailog);
+                    moneyLogDao.addList(moneyLogs);
+                    return new MyResponse();
                 }
+                dto.setUserId(u2.getUserId());
+                dto.setCashEarningsMoney(money * 0.2);
+                userDao.updateCashBackBonus(dto);
+                MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
+                moneyLogs = Arrays.asList(yonghu,yonghulog1,yonghulog2,pingtailog);
+                moneyLogDao.addList(moneyLogs);
+                return new MyResponse();
             }
-
-            // 三级上级为钻石代理
-//            if (u3.getLevel() == 3) {
-//                dto.setUserId(u3.getUserId());
-//                dto.setCashEarningsMoney(money * 0.6);
-//                userDao.updateCashBackBonus(dto);
-//                moneyLogDao.add(new MoneyLog(u3.getUserId(), money * 0.6, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId()));
-//
-//                MoneyLog yonghulog = new MoneyLog(u3.getUserId(), money * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-//                MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-//                List<MoneyLog> moneyLogs = new ArrayList<>();
-//                moneyLogDao.addList(moneyLogs);
-//            }
-
-
+            dto.setUserId(u1.getUserId());
+            dto.setCashEarningsMoney(money * 0.2);
+            userDao.updateCashBackBonus(dto);
+            MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+            MoneyLog pingtailog = new MoneyLog(0, money * 0.8, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
+            moneyLogs = Arrays.asList(yonghu,yonghulog1,pingtailog);
+            moneyLogDao.addList(moneyLogs);
+            return new MyResponse();
         }
 
-
-        // 二级上级为金牌代理
-        if (u1.getLevel() == 0 && u1.getLevel() == 9 && u2.getLevel() == 2) {
-            dto.setUserId(u2.getUserId());
-            dto.setCashEarningsMoney(money * 0.4);
-            userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog = new MoneyLog(u2.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            moneyLogDao.add(yonghulog);
-            // 三级上级为钻石代理
-            // 如果有三级上级则平台收益为 20%，没有则为 60%
+        if (u2.getLevel() == 2) {
             if (u3.getLevel() == 3) {
                 dto.setUserId(u3.getUserId());
                 dto.setCashEarningsMoney(money * 0.4);
                 userDao.updateCashBackBonus(dto);
-                MoneyLog yonghulog1 = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+                MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
                 MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-                List<MoneyLog> moneyLogs = new ArrayList<>();
-                moneyLogs.add(yonghulog1);
-                moneyLogs.add(pingtailog);
+                moneyLogs = Arrays.asList(yonghu,yonghulog2,yonghulog3,pingtailog);
                 moneyLogDao.addList(moneyLogs);
-            } else {
-                MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                moneyLogDao.add(pingtailog);
+                return new MyResponse();
             }
-
-        }
-
-        // 三级上级为银牌代理，代理拿 20%，平台 80%
-        if (u1.getLevel() == 0 && u2.getLevel() == 0 && u1.getLevel() == 9 && u2.getLevel() == 9 && u3.getLevel() == 1) {
-            dto.setUserId(u3.getUserId());
-            dto.setCashEarningsMoney(money * 0.2);
-            userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog = new MoneyLog(u3.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.8, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            List<MoneyLog> moneyLogs = new ArrayList<>();
-            moneyLogs.add(yonghulog);
-            moneyLogs.add(pingtailog);
-            moneyLogDao.addList(moneyLogs);
-        }
-
-        // 三级上级为金牌代理，代理拿 40%，平台 60%
-        if (u1.getLevel() == 0 && u2.getLevel() == 0 && u1.getLevel() == 9 && u2.getLevel() == 9 && u3.getLevel() == 2) {
-            dto.setUserId(u3.getUserId());
+            dto.setUserId(u2.getUserId());
             dto.setCashEarningsMoney(money * 0.4);
             userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+            MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
             MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            List<MoneyLog> moneyLogs = new ArrayList<>();
-            moneyLogs.add(yonghulog);
-            moneyLogs.add(pingtailog);
+            moneyLogs = Arrays.asList(yonghu,yonghulog2,pingtailog);
             moneyLogDao.addList(moneyLogs);
+            return new MyResponse();
         }
 
-        // 三级上级为钻石代理，代理拿 80%，平台 20%
-        if (u1.getLevel() == 0 && u2.getLevel() == 0 && u1.getLevel() == 9 && u2.getLevel() == 9 && u3.getLevel() == 3) {
+        if (u3.getLevel() == 3) {
             dto.setUserId(u3.getUserId());
             dto.setCashEarningsMoney(money * 0.8);
             userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog = new MoneyLog(u3.getUserId(), money * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+            MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
+            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
             MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            List<MoneyLog> moneyLogs = new ArrayList<>();
-            moneyLogs.add(yonghulog);
-            moneyLogs.add(pingtailog);
+            moneyLogs = Arrays.asList(yonghu,yonghulog3,pingtailog);
             moneyLogDao.addList(moneyLogs);
+            return new MyResponse();
         }
+        return new MyResponse("操作失败",0);
+    }
 
-
-        return null;
+    /**
+     * 立即办卡激活奖励
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse initCard(InitCardDTO dto) {
+        User user = userDao.getUserById(dto.getUserId());
+        Map map = new HashMap();
+        map.put("userId", user.getSuperior1());
+        map.put("money", dto.getSuperiorBonus());
+        userDao.updatCereateCardBonusByPId(map);
+        map.put("userId", dto.getUserId());
+        map.put("money", dto.getBankBonus());
+        userDao.updatCereateCardBonusByPId(map);
+        map.put("status", 1);
+        createCardDao.updateStatus(map);
+        return new MyResponse();
     }
 
 

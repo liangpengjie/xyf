@@ -12,4 +12,10 @@ public interface CreateCardService {
      * @return
      */
     MyResponse CreateCardInfo(CreateCardInfoDTO dto);
+
+    /**
+     * 办卡用户信息列表
+     * @return
+     */
+    MyResponse createCardInfoList();
 }

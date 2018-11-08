@@ -3,13 +3,13 @@
 <mapper namespace="com.xyf.dao.BankDao" >
 
   <insert id="add" parameterType="com.xyf.entity.manager.Bank">
-    INSERT into bank (bank_name,bank_bonus,superior_bonus,img,url_plan_query,url_create_card,reward_conditions)
-              VALUES ( #{bankName},#{bankBonus},#{superiorBonus},#{img},#{urlPlanQuery},#{urlCreateCard},#{rewardConditions})
+    INSERT into bank (bank_name,bank_bonus,superior_bonus,img,url_plan_query,url_create_card,reward_conditions,status)
+              VALUES ( #{bankName},#{bankBonus},#{superiorBonus},#{img},#{urlPlanQuery},#{urlCreateCard},#{rewardConditions},#{status})
   </insert>
 
   <update id="edit" parameterType="com.xyf.entity.manager.Bank">
     update bank
-    set bank_name = #{bankName}, bank_bonus = #{bankBonus},superior_bonus=#{superiorBonus},img = #{img},
+    set bank_name = #{bankName}, bank_bonus = #{bankBonus},superior_bonus=#{superiorBonus},img = #{img},status = #{status},
         url_create_card=#{urlCreateCard},url_plan_query=#{urlPlanQuery},reward_conditions=#{rewardConditions}
     where bank_id = #{bankId}
   </update>
@@ -19,7 +19,7 @@
   </delete>
 
   <select id="list" resultType="com.xyf.entity.manager.Bank">
-    select bank_id bankId,bank_name bankName,bank_bonus bankBonus,superior_bonus superiorBonus,img img,url_plan_query,url_create_card,reward_conditions rewardConditions from bank
+    select bank_id bankId,bank_name bankName,bank_bonus bankBonus,superior_bonus superiorBonus,status status,img img,url_plan_query urlPlanQuery,url_create_card urlCreateCard,reward_conditions rewardConditions from bank
   </select>
 
   <select id="getBonusByName" parameterType="java.lang.String" resultType="java.lang.Double">

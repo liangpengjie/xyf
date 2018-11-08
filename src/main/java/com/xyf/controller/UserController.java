@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 
 @RestController
@@ -65,14 +66,17 @@ public class UserController {
      * @return
      */
     @PostMapping("/checkCode")
-    public MyResponse checkSMSCode(@RequestBody @NotNull String code) {
-        return userService.checkSMSCode(code);
+    public MyResponse checkSMSCode(@RequestBody @NotNull Map<String,String> code) {
+        if (code.get("code") == null) {
+            return new MyResponse("code为必填参数",0);
+        }
+        return userService.checkSMSCode(code.get("code"));
     }
 
 
     /**
      * 根据电话修改密码
-     * @param dto
+     * @param dto sdf
      * @return
      */
     @PostMapping("/updatePassword")
@@ -83,7 +87,7 @@ public class UserController {
 
     /**
      * 查询用户
-     * @param dto
+     * @param dto userPhoneDto
      * @return
      */
     @PostMapping("/selectUserInfo")
@@ -117,5 +121,17 @@ public class UserController {
     public MyResponse cashEarnings(@RequestBody @Valid CashEarningsDTO dto) {
         return userService.cashEarnings(dto);
     }
+
+    /**
+     * 立即办卡激活奖励
+     * @return
+     */
+    @PostMapping("/initCard")
+    public MyResponse initCard(@RequestBody @Valid InitCardDTO dto) {
+        return userService.initCard(dto);
+    }
+
+
+
 
 }

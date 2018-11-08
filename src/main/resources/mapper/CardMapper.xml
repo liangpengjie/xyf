@@ -5,13 +5,13 @@
 
   <insert id="addCard" parameterType="com.xyf.dto.AddCardDTO" >
     INSERT INTO `card`
-    (`card_number`, `bank_name`,`bank_id`,`card_user_id`, `statement_date`, `repayment_date`,status,create_time)
-    VALUES (#{cardNumber}, #{bankName},#{bankId}, #{cardUserId}, #{statementDate}, #{repaymentDate},#{status},#{createTime});
+    (`card_number`, `bank_id`,`card_user_id`, `statement_date`, `repayment_date`,status,create_time)
+    VALUES (#{cardNumber}, #{bankId}, #{cardUserId}, #{statementDate}, #{repaymentDate},#{status},#{createTime});
   </insert>
 
   <select id="cardList" parameterType="com.xyf.dto.UserPhoneDTO" resultType="com.xyf.entity.Card">
     select
-    `card_id` cardId, `card_number` cardNumber, `bank_name` bankName,`bank_id` bankId, `card_user_name` cardUserName, `card_user_id` cardUserId, `bank_bonus` bankBonus,
+    `card_id` cardId, `card_number` cardNumber,`bank_id` bankId, `card_user_name` cardUserName, `card_user_id` cardUserId, `bank_bonus` bankBonus,
     `statement_date` statementDate, `repayment_date` repaymentDate, `create_time` createTime, `status` status, `id_number` idNumber, `real_name` realName
     from card where card_user_id = #{userId}
   </select>

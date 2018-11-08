@@ -20,6 +20,16 @@ public class Bank implements Serializable {
     private String urlPlanQuery;
     // 奖励条件
     private String rewardConditions;
+    // 状态 0,不展示  1，展示
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getRewardConditions() {
         return rewardConditions;

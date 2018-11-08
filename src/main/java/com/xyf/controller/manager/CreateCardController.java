@@ -30,4 +30,15 @@ public class CreateCardController {
 
     }
 
+
+    /**
+     * 办卡用户信息列表
+     *
+     * @return
+     */
+    @PostMapping("/list")
+    public MyResponse createCardInfoList() {
+        return createCardService.createCardInfoList();
+
+    }
 }
