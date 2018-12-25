@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.ImgsUrlDao">
+
+    <select id="list" resultType="com.xyf.entity.ImgsUrl">
+        select id,url,type from imgs_url
+    </select>
+
+    <update id="editImgsUrl" parameterType="com.xyf.entity.ImgsUrl">
+        UPDATE `wei`.`imgs_url` SET `url`=#{url} WHERE `id`= #{id} and type = #{type}
+    </update>
+
+</mapper>

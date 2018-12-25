@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.UserBankDao">
+
+    <insert id="addBank" parameterType="com.xyf.entity.UserBank">
+        INSERT INTO `wei`.`user_bank`
+        ( `bank_name`, `card_id`, `is_default`, `user_name`,`user_id`) VALUES
+        ( #{bankName}, #{cardId},
+        <choose>
+            <when test="isDefault == null">
+                1
+            </when>
+            <otherwise>
+                0
+            </otherwise>
+        </choose>
+         ,#{userName},#{userId});
+    </insert>
+    <update id="editBank" parameterType="com.xyf.entity.UserBank">
+        UPDATE `wei`.`user_bank`
+        SET `bank_name`=#{bankName}, `card_id`=#{cardId},`user_name`=#{userName}
+        WHERE (`id`=#{id});
+    </update>
+    <delete id="delBank" parameterType="com.xyf.dto.TYIDDTO">
+        delete from user_bank where id = #{id}
+    </delete>
+    <select id="bankList" parameterType="com.xyf.dto.IdDTO" resultType="com.xyf.entity.UserBank">
+        select id,bank_name bankName,card_id cardId,is_default isDefault,user_name userName,user_id userId
+        from user_bank where user_id = #{userId}
+    </select>
+    <update id="editDefaultBank" parameterType="com.xyf.dto.IdsDTO">
+        UPDATE `wei`.`user_bank` SET `is_default`= 1 WHERE (`id`=#{id});
+    </update>
+    <update id="editDefaultBank0" parameterType="com.xyf.dto.IdsDTO">
+        UPDATE `wei`.`user_bank` SET `is_default`= 0 WHERE (`user_id`=#{userId});
+    </update>
+    <select id="count"  parameterType="com.xyf.entity.UserBank" resultType="java.lang.Integer">
+        SELECT count(id) from user_bank where (`user_id`=#{userId})
+    </select>
+    <select id="selectDefaultBank" parameterType="com.xyf.dto.IdDTO" resultType="com.xyf.entity.UserBank">
+        SELECT id,bank_name bankName,card_id cardId,is_default isDefault,user_name userName,user_id userId
+        from user_bank where user_id = #{userId} and is_default = 1
+    </select>
+
+</mapper>

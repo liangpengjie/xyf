@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.ProductsLogDao">
+
+    <insert id="insert" parameterType="com.xyf.entity.ProductsLog">
+      INSERT INTO `wei`.`products_log` ( `user_id`, `user_phone`, `pos_id_1`, `user_address`, `create_time`,pos_name_1,pos_name_2,user_name,terminal_number)
+      VALUES (#{userId}, #{userPhone}, #{posId1},  #{userAddress}, now(),#{posName1},#{userName},#{terminalNumber});
+    </insert>
+
+    <update id="updateStatus" parameterType="com.xyf.dto.TYIDDTO">
+        update `wei`.`products_log` set status = 1 where id = #{id}
+    </update>
+
+    <select id="list" resultType="com.xyf.entity.User" parameterType="com.xyf.dto.StatusDTO">
+        SELECT
+        `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
+        from `user` WHERE user_id in(SELECT user_id from products_log WHERE `status` = #{status}) and is_partner = #{status}
+    </select>
+
+    <select id="shipList" parameterType="com.xyf.dto.StatusDTO" resultType="java.util.Map">
+        SELECT
+        p.id id,u.user_id userId,u.phone phone, p.user_address sAddress,p.user_phone sPhone,p.user_name userName,p.pos_name_1 posName1,p.status status,p.terminal_number terminalNumber
+        from `user` u RIGHT JOIN products_log p on p.user_id = u.user_id
+        WHERE p.`status` = #{status}
+    </select>
+
+    <update id="updateTerminal" parameterType="com.xyf.dto.InitPartnerDTO">
+        update `wei`.`products_log` set terminal_number = #{terminalNumber} where user_id = #{userId} and terminal_number is null
+    </update>
+
+</mapper>

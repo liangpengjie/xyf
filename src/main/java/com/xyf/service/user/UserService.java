@@ -2,6 +2,8 @@ package com.xyf.service.user;
 
 import com.xyf.common.MyResponse;
 import com.xyf.dto.*;
+import com.xyf.entity.ShipLog;
+import com.xyf.entity.UserBank;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -74,7 +76,7 @@ public interface UserService {
      * @param dto
      * @return
      */
-    MyResponse expectedReturn(PhoneDTO dto);
+    MyResponse expectedReturn(IdDTO dto);
 
 
     /**
@@ -90,4 +92,60 @@ public interface UserService {
      * @return
      */
     MyResponse initCard(InitCardDTO dto);
+
+    /**
+     * 用户提现日志
+     * @param shipLog
+     * @return
+     */
+    MyResponse addShipLog(ShipLog shipLog);
+
+    /**
+     * 用户添加提现银行
+     * @param userBank
+     * @return
+     */
+    MyResponse addBank(UserBank userBank);
+
+    /**
+     * 用户修改提现银行
+     * @param userBank
+     * @return
+     */
+    MyResponse editBank(UserBank userBank);
+
+    /**
+     * 用户删除提现银行
+     * @param dto
+     * @return
+     */
+    MyResponse delBank(TYIDDTO dto);
+
+    /**
+     * 用户提现银行列表
+     * @param dto
+     * @return
+     */
+    MyResponse bankList(IdDTO dto);
+
+    /**
+     * 更改默认提现银行
+     * @param dto
+     * @return
+     */
+    MyResponse editDefaultBank(IdsDTO dto);
+
+    /**
+     * 查询用户默认提现银行
+     * @param dto
+     * @return
+     */
+    MyResponse selectDefaultBank(IdDTO dto);
+
+    /**
+     * 效验电话是否存在
+     * @param dto
+     * @return
+     */
+    MyResponse verifyPhone(PhoneDTO dto);
 }

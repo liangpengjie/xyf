@@ -15,14 +15,41 @@
         FROM createcardinfo where phone =#{phone}
     </select>
 
-    <select id="createCardInfoList" resultType="com.xyf.entity.manager.CreateCardInfo">
+    <select id="createCardInfoList" parameterType="com.xyf.dto.Page" resultType="com.xyf.entity.manager.CreateCardInfo">
         SELECT
-        c.user_id userId,c.id_number idNumber,c.real_name realName,b.bank_name bankName,c.create_time createTime,c.`status` status,c.phone phone,b.superior_bonus superiorBonus,b.bank_bonus bankBonus
+        c.id id,c.user_id userId,c.id_number idNumber,c.real_name realName,b.bank_name bankName,c.create_time createTime,c.`status` status,c.phone phone,b.superior_bonus superiorBonus,b.bank_bonus bankBonus
         FROM createcardinfo c,bank b WHERE c.bank_name = b.bank_id
+        <if test="phone != null">
+            and c.phone like '%${phone}%'
+        </if>
+        <if test="status != null">
+            and c.status = #{status}
+        </if>
     </select>
 
     <update id="updateStatus" parameterType="java.util.Map">
       UPDATE `createcardinfo` set status= #{status} WHERE user_id = ${userId}
     </update>
+
+    <delete id="delete" parameterType="com.xyf.dto.TYIDDTO">
+        delete from createcardinfo where id = #{id}
+    </delete>
+
+    <select id="yjuy" parameterType="java.lang.String" resultType="java.lang.Double">
+        SELECT IFNULL(sum(b.bank_bonus),0) FROM `createcardinfo` c LEFT JOIN bank b on c.bank_name = b.bank_id
+        WHERE c.phone = #{phone}
+    </select>
+
+    <select id="yjuyById" parameterType="java.lang.Integer" resultType="java.lang.Double">
+        SELECT IFNULL(sum(b.bank_bonus),0) FROM `createcardinfo` c LEFT JOIN bank b on c.bank_name = b.bank_id
+        WHERE c.user_id = #{userId}
+    </select>
+
+    <select id="sjuy" parameterType="java.lang.String" resultType="java.lang.Double">
+        SELECT IFNULL(sum(b.bank_bonus),0) FROM `createcardinfo` c LEFT JOIN bank b on c.bank_name = b.bank_id
+        WHERE c.phone = #{phone} and c.status = 1
+    </select>
+
+
 
 </mapper>

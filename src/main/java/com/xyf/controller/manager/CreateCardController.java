@@ -2,6 +2,8 @@ package com.xyf.controller.manager;
 
 import com.xyf.common.MyResponse;
 import com.xyf.dto.CreateCardInfoDTO;
+import com.xyf.dto.Page;
+import com.xyf.dto.TYIDDTO;
 import com.xyf.service.manager.CreateCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,15 +32,23 @@ public class CreateCardController {
 
     }
 
-
     /**
      * 办卡用户信息列表
      *
      * @return
      */
     @PostMapping("/list")
-    public MyResponse createCardInfoList() {
-        return createCardService.createCardInfoList();
+    public MyResponse createCardInfoList(@RequestBody Page page) {
+        return createCardService.createCardInfoList(page);
+    }
 
+    /**
+     * 删除办卡信息
+     *
+     * @return
+     */
+    @PostMapping("/delete")
+    public MyResponse delete(@RequestBody @Valid TYIDDTO dto) {
+        return createCardService.delete(dto);
     }
 }

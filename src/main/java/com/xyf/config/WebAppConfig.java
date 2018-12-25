@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -26,7 +23,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         //文件最大KB,MB
         factory.setMaxFileSize("2MB");
         //设置总上传数据总大小
-        factory.setMaxRequestSize("100MB");
+        factory.setMaxRequestSize("1000MB");
         return factory.createMultipartConfig();
     }
 
@@ -55,5 +52,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                         .allowedHeaders("*");
             }
         };
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        super.addInterceptors(registry);
     }
 }

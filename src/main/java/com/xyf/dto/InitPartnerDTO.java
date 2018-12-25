@@ -17,6 +17,25 @@ public class InitPartnerDTO {
     //返现余额
     Double bonus;
 
+    Integer userId;
+    String terminalNumber;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getTerminalNumber() {
+        return terminalNumber;
+    }
+
+    public void setTerminalNumber(String terminalNumber) {
+        this.terminalNumber = terminalNumber;
+    }
+
     public Double getBonus() {
         return bonus;
     }

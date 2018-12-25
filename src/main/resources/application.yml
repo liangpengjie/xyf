@@ -43,7 +43,7 @@ spring:
       max-pool-prepared-statement-per-connection-size: 20
   #日期格式，东八区
   jackson:
-    data-format : yyyy-MM-dd
+    data-format : yyyy-MM-dd HH:mm:ss
     timezone: GMT+8
 
 mybatis:
@@ -76,6 +76,16 @@ endpoints:
   shutdown:
     enabled: true
     path: /xyf
+
+wx:
+  pay:
+    appId: wx4e31adf4c44e85e3
+    mchId: 1518167471
+    #mchKey: #微信支付商户密钥
+    #subAppId: #服务商模式下的子商户公众账号ID
+    #subMchId: #服务商模式下的子商户号
+    keyPath: classpath:cert/apiclient_cert.p12
+
 
 
 

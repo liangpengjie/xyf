@@ -11,9 +11,9 @@
 
   <select id="cardList" parameterType="com.xyf.dto.UserPhoneDTO" resultType="com.xyf.entity.Card">
     select
-    `card_id` cardId, `card_number` cardNumber,`bank_id` bankId, `card_user_name` cardUserName, `card_user_id` cardUserId, `bank_bonus` bankBonus,
-    `statement_date` statementDate, `repayment_date` repaymentDate, `create_time` createTime, `status` status, `id_number` idNumber, `real_name` realName
-    from card where card_user_id = #{userId}
+    c.`card_id` cardId,c.`card_number` cardNumber,c.`bank_id` bankId,b.bank_name bankName, c.`card_user_name` cardUserName, c.`card_user_id` cardUserId, c.`bank_bonus` bankBonus,
+    c.`statement_date` statementDate, c.`repayment_date` repaymentDate, c.`create_time` createTime, c.`status` status, c.`id_number` idNumber, c.`real_name` realName
+    from card c LEFT JOIN bank b on c.bank_id = b.bank_id where card_user_id = #{userId}
   </select>
 
   <delete id="delete" parameterType="com.xyf.entity.Card">

@@ -46,4 +46,17 @@ public interface UserDao {
 
     void updateCashBackBonus(CashEarningsDTO dto);
 
+    void updateLever(InitPartnerDTO dto);
+
+    int verifyPhone(PhoneDTO dto);
+
+    void minCashBackBonus(CashEarningsDTO dto);
+
+    void updateCashBackBonusByMap(Map map);
+
+    void minCreateCardBonus(CashEarningsDTO dto);
+
+    void minUserBonus(CashEarningsDTO dto);
+
+    void minuseCardBonus(CashEarningsDTO dto);
 }

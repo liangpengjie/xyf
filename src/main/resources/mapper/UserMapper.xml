@@ -8,27 +8,31 @@
     </insert>
 
     <select id="verifyUsername" parameterType="com.xyf.dto.VerifyUsernameDTO" resultType="com.xyf.entity.User">
-        SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,user_bonus userBonus
+        SELECT user_id userId,username,password,phone,address,goods_number goodsNumber,balance,superior1,superior2,superior3,user_bonus userBonus,is_partner isPartner
          from `user` WHERE username = #{username}
     </select>
 
+    <select id="verifyPhone" parameterType="com.xyf.dto.PhoneDTO" resultType="java.lang.Integer">
+        SELECT COUNT(1) from user where phone = #{phone}
+    </select>
+
     <select id="login" parameterType="com.xyf.dto.LoginDTO" resultType="com.xyf.entity.User">
-        SELECT`user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
+        SELECT`user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
          from `user` WHERE phone=#{phone} AND password = #{password}
     </select>
 
     <select id="getUserByPhone" parameterType="String" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
         FROM USER WHERE phone = #{phone}
     </select>
 
     <select id="getUserById" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
         FROM USER WHERE user_id=#{superior1}
     </select>
     
     <select id="getUsersByIds" parameterType="java.util.List" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
         FROM USER WHERE user_id in
         <foreach item="id" index="index" collection="list" separator="," open="(" close=")">
             #{id}
@@ -41,34 +45,42 @@
     </update>
 
     <update id="updateUserLevel" parameterType="com.xyf.dto.InitPartnerDTO">
-        UPDATE `user` set `level` = #{level}
+        UPDATE `user` set `level` = #{level},is_partner = 1
         <if test="bonus != null">
             ,user_bonus = #{bonus}
         </if>
         WHERE phone = #{phone}
     </update>
 
+    <update id="updateLever" parameterType="com.xyf.dto.InitPartnerDTO">
+        UPDATE `user` set `level` = #{level} WHERE phone = #{phone}
+    </update>
+
     <update id="updateUserBonus" parameterType="com.xyf.dto.InitPartnerDTO">
         UPDATE `user` set `user_bonus` = user_bonus + #{monery} WHERE phone = #{phone}
     </update>
 
+    <update id="updateCashBackBonusByMap" parameterType="java.util.Map">
+        UPDATE `user` set `user_bonus` = user_bonus + #{monery} WHERE phone = #{phone}
+    </update>
+
     <select id="getSuperior" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
          from `user` WHERE user_id=#{superior1}
     </select>
 
     <select id="selectSubordinate" parameterType="java.util.Map" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
          from `user` WHERE superior1 = #{userId}
     </select>
 
     <select id="selectUserInfo" parameterType="com.xyf.dto.UserPhoneDTO" resultType="com.xyf.entity.User">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus, `level`, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus,is_partner isPartner
          from `user` WHERE user_id=#{userId}
    </select>
 
     <select id="users" resultType="com.xyf.entity.User" parameterType="com.xyf.dto.PageDTO">
-        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus,
+        SELECT `user_id` userId, `username` userName, `phone` phone, `address` address, `goods_number` goodsNumber, `balance` userBalance, `superior1` , `superior2`, `superior3`, `user_bonus` userBonus, `use_card_bonus` useCardBonus,is_partner isPartner,
         `level`, `create_time` createTime, `create_card_bonus` createCardBonus,cash_back_bonus cashBackBonus from `user`
         where 1=1
         <if test="phone != null">
@@ -92,7 +104,23 @@
     </update>
 
     <update id="updateCashBackBonus" parameterType="com.xyf.dto.CashEarningsDTO">
-      UPDATE `user` set user_bonus= user_bonus + #{cashEarningsMoney} WHERE user_id = ${userId}
+      UPDATE `user` set cash_back_bonus = cash_back_bonus + #{cashEarningsMoney} WHERE user_id = ${userId}
+    </update>
+
+    <update id="minCashBackBonus" parameterType="com.xyf.dto.CashEarningsDTO">
+      UPDATE `user` set cash_back_bonus = cash_back_bonus - #{cashEarningsMoney} WHERE user_id = ${userId}
+    </update>
+
+    <update id="minCreateCardBonus" parameterType="com.xyf.dto.CashEarningsDTO">
+      UPDATE `user` set create_card_bonus = create_card_bonus - #{cashEarningsMoney} WHERE user_id = ${userId}
+    </update>
+
+    <update id="minUserBonus" parameterType="com.xyf.dto.CashEarningsDTO">
+      UPDATE `user` set user_bonus = user_bonus - #{cashEarningsMoney} WHERE user_id = ${userId}
+    </update>
+
+    <update id="minuseCardBonus" parameterType="com.xyf.dto.CashEarningsDTO">
+      UPDATE `user` set use_card_bonus = use_card_bonus - #{cashEarningsMoney} WHERE user_id = ${userId}
     </update>
 
     <select id="selectLevelId" parameterType="java.lang.Integer" resultType="com.xyf.entity.User">
@@ -101,5 +129,7 @@
          v on u.user_id = v.user_id OR u.user_id = v.superior1 OR
          u.user_id = v.superior2 OR u.user_id = v.superior3 WHERE v.user_id = #{userId} order by u.user_id
     </select>
+
+
 
 </mapper>

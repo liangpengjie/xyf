@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class CreateCardInfo implements Serializable {
 
+    private Integer id;
     private Integer userId;
     private String idNumber;
     private String phone;
@@ -17,6 +18,14 @@ public class CreateCardInfo implements Serializable {
     private Integer status;
     private double superiorBonus;
     private double bankBonus;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public double getBankBonus() {
         return bankBonus;

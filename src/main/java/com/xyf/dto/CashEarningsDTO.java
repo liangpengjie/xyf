@@ -11,6 +11,16 @@ public class CashEarningsDTO {
     @NotNull
     @Min(120)
     private Double cashEarningsMoney;
+    // 提现类型
+    private Integer txType = 0;
+
+    public Integer getTxType() {
+        return txType;
+    }
+
+    public void setTxType(Integer txType) {
+        this.txType = txType;
+    }
 
     public Integer getUserId() {
         return userId;

@@ -9,11 +9,10 @@ import com.xyf.common.constant.MoneyLogConstant;
 import com.xyf.dao.*;
 import com.xyf.dto.*;
 import com.xyf.entity.MoneyLog;
-import com.xyf.entity.PosJi;
+import com.xyf.entity.ShipLog;
 import com.xyf.entity.User;
-import com.xyf.entity.manager.CreateCardInfo;
+import com.xyf.entity.UserBank;
 import com.xyf.service.user.UserService;
-import javafx.geometry.Pos;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +41,10 @@ public class UserServiceImpl implements UserService {
     private BankDao bankDao;
     @Autowired
     private MoneyLogDao moneyLogDao;
+    @Autowired
+    private ShipLogDao shipLogDao;
+    @Autowired
+    private UserBankDao userBankDao;
 
     @Override
     public MyResponse addUser(AddUserDTO dto) {
@@ -158,17 +161,49 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public MyResponse expectedReturn(PhoneDTO dto) {
-        List<CreateCardInfo> users = createCardDao.getUserByPhone(dto.getPhone());
-        double expectedReturn = 0;
-        for (int i = 0; i < users.size(); i++) {
-            expectedReturn += bankDao.getBonusByName(users.get(i).getBankName());
-        }
+    public MyResponse expectedReturn(IdDTO dto) {
         Map result = new HashMap(4);
-        result.put("expectedReturn", expectedReturn);
-        User user = userDao.getUserByPhone(dto.getPhone());
-        result.put("actualIncome", expectedReturn + user.getCreateCardBonus());
+        User user = userDao.getUserById(dto.getUserId());
+        if(user == null){
+            return new MyResponse("用户不存在",0);
+        }
+        double yjuy = createCardDao.yjuyById(dto.getUserId());
+        result.put("expectedReturn", String.format("%.2f", yjuy));
+
+        // List<CreateCardInfo> users = createCardDao.getUserByPhone(dto.getPhone());
+        // double expectedReturn = 0;
+        // for (int i = 0; i < users.size(); i++) {
+        //     expectedReturn += bankDao.getBonusByName(users.get(i).getBankName());
+        // }
+
+
+        // double sjuy = moneyLogDao.sjuy(dto.getPhone());
+        result.put("actualIncome", user.getCreateCardBonus());
         return new MyResponse(result);
+    }
+
+    // 提现分类
+    private boolean tx(CashEarningsDTO dto) {
+        switch (dto.getTxType()) {
+            case 11:
+                // 办卡收益
+                userDao.minCreateCardBonus(dto);
+                return true;
+            case 12:
+                // 推广收益
+                userDao.minUserBonus(dto);
+                return true;
+            case 13:
+                // 自己刷卡收益提现
+                userDao.minuseCardBonus(dto);
+                return true;
+            case 14:
+                // 下级刷卡收益提现
+                userDao.minCashBackBonus(dto);
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -184,12 +219,23 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public MyResponse cashEarnings(CashEarningsDTO dto) {
+        if (dto.getTxType() == 0) {
+            return new MyResponse("提现类型不可为空", 0);
+        }
+        User u = userDao.getUserById(dto.getUserId());
+        if(u == null){
+            return new MyResponse("用户不存在", 0);
+        }
         // 20% 手续费交给平台和合伙人.自身得 80%
         double money = dto.getCashEarningsMoney() * 0.2;
         dto.setCashEarningsMoney(dto.getCashEarningsMoney() * 0.8);
-        userDao.updateCashBackBonus(dto);
+        if(!tx(dto)){
+            return new MyResponse("提现类型参数错误", 0);
+        }
 
-        User u = userDao.getUserById(dto.getUserId());
+        // TODO 添加提现日志
+
+
         ArrayList ids = new ArrayList();
         ids.add(u.getSuperior1());
         ids.add(u.getSuperior2());
@@ -206,33 +252,33 @@ public class UserServiceImpl implements UserService {
                     dto.setUserId(u3.getUserId());
                     dto.setCashEarningsMoney(money * 0.4);
                     userDao.updateCashBackBonus(dto);
-                    MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                    MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                    MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                    MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                    MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-                    moneyLogs = Arrays.asList(yonghu,yonghulog1,yonghulog2,yonghulog3,pingtailog);
+                    MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                    MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                    MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                    MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                    MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, dto.getTxType(), u.getUserId(), 0, 0D);
+                    moneyLogs = Arrays.asList(yonghu, yonghulog1, yonghulog2, yonghulog3, pingtailog);
                     moneyLogDao.addList(moneyLogs);
                     return new MyResponse();
                 }
                 dto.setUserId(u2.getUserId());
                 dto.setCashEarningsMoney(money * 0.2);
                 userDao.updateCashBackBonus(dto);
-                MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-                moneyLogs = Arrays.asList(yonghu,yonghulog1,yonghulog2,pingtailog);
+                MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.PINGTAI, dto.getTxType(), u.getUserId(), 0, 0D);
+                moneyLogs = Arrays.asList(yonghu, yonghulog1, yonghulog2, pingtailog);
                 moneyLogDao.addList(moneyLogs);
                 return new MyResponse();
             }
             dto.setUserId(u1.getUserId());
             dto.setCashEarningsMoney(money * 0.2);
             userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.8, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            moneyLogs = Arrays.asList(yonghu,yonghulog1,pingtailog);
+            MoneyLog yonghulog1 = new MoneyLog(u1.getUserId(), money * 0.2, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+            MoneyLog pingtailog = new MoneyLog(0, money * 0.8, MoneyLogConstant.PINGTAI, dto.getTxType(), u.getUserId(), 0, 0D);
+            moneyLogs = Arrays.asList(yonghu, yonghulog1, pingtailog);
             moneyLogDao.addList(moneyLogs);
             return new MyResponse();
         }
@@ -242,21 +288,21 @@ public class UserServiceImpl implements UserService {
                 dto.setUserId(u3.getUserId());
                 dto.setCashEarningsMoney(money * 0.4);
                 userDao.updateCashBackBonus(dto);
-                MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-                MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-                moneyLogs = Arrays.asList(yonghu,yonghulog2,yonghulog3,pingtailog);
+                MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+                MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, dto.getTxType(), u.getUserId(), 0, 0D);
+                moneyLogs = Arrays.asList(yonghu, yonghulog2, yonghulog3, pingtailog);
                 moneyLogDao.addList(moneyLogs);
                 return new MyResponse();
             }
             dto.setUserId(u2.getUserId());
             dto.setCashEarningsMoney(money * 0.4);
             userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            moneyLogs = Arrays.asList(yonghu,yonghulog2,pingtailog);
+            MoneyLog yonghulog2 = new MoneyLog(u2.getUserId(), money * 0.4, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+            MoneyLog pingtailog = new MoneyLog(0, money * 0.6, MoneyLogConstant.PINGTAI, dto.getTxType(), u.getUserId(), 0, 0D);
+            moneyLogs = Arrays.asList(yonghu, yonghulog2, pingtailog);
             moneyLogDao.addList(moneyLogs);
             return new MyResponse();
         }
@@ -265,14 +311,14 @@ public class UserServiceImpl implements UserService {
             dto.setUserId(u3.getUserId());
             dto.setCashEarningsMoney(money * 0.8);
             userDao.updateCashBackBonus(dto);
-            MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, MoneyLogConstant.TIXIAN, u.getUserId());
-            MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, MoneyLogConstant.TIXIAN, u.getUserId());
-            moneyLogs = Arrays.asList(yonghu,yonghulog3,pingtailog);
+            MoneyLog yonghulog3 = new MoneyLog(u3.getUserId(), money * 0.8, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+            MoneyLog yonghu = new MoneyLog(u.getUserId(), dto.getCashEarningsMoney() * 0.8, MoneyLogConstant.YONGHU, dto.getTxType(), u.getUserId(), 0, 0D);
+            MoneyLog pingtailog = new MoneyLog(0, money * 0.2, MoneyLogConstant.PINGTAI, dto.getTxType(), u.getUserId(), 0, 0D);
+            moneyLogs = Arrays.asList(yonghu, yonghulog3, pingtailog);
             moneyLogDao.addList(moneyLogs);
             return new MyResponse();
         }
-        return new MyResponse("操作失败",0);
+        return new MyResponse("操作失败", 0);
     }
 
     /**
@@ -293,7 +339,129 @@ public class UserServiceImpl implements UserService {
         userDao.updatCereateCardBonusByPId(map);
         map.put("status", 1);
         createCardDao.updateStatus(map);
+        MoneyLog u = new MoneyLog(dto.getUserId(), dto.getBankBonus() + 0D, MoneyLogConstant.YONGHU, MoneyLogConstant.LIJIBANKA, dto.getUserId(), 0, 0D);
+        MoneyLog u1 = new MoneyLog(user.getSuperior1(), dto.getSuperiorBonus() + 0D, MoneyLogConstant.YONGHU, MoneyLogConstant.LIJIBANKA, dto.getUserId(), 0, 0D);
+        moneyLogDao.addList(Arrays.asList(u, u1));
         return new MyResponse();
+    }
+
+    /**
+     * 用户提现日志
+     *
+     * @param shipLog
+     * @return
+     */
+    @Override
+    public MyResponse addShipLog(ShipLog shipLog) {
+        int i = shipLogDao.addShipLog(shipLog);
+        if (i == 1) {
+            return new MyResponse();
+        }
+        return new MyResponse("操作失败！", 0);
+    }
+
+    /**
+     * 用户添加提现银行
+     *
+     * @param userBank
+     * @return
+     */
+    @Override
+    public MyResponse addBank(UserBank userBank) {
+        int count = userBankDao.count(userBank);
+        if (count > 0) {
+            userBank.setIsDefault(1);
+        }
+        int i = userBankDao.addBank(userBank);
+        if (i == 1) {
+            return new MyResponse();
+        }
+        return new MyResponse("操作失败！", 0);
+    }
+
+    /**
+     * 用户修改提现银行
+     *
+     * @param userBank
+     * @return
+     */
+    @Override
+    public MyResponse editBank(UserBank userBank) {
+        int i = userBankDao.editBank(userBank);
+        if (i == 1) {
+            return new MyResponse();
+        }
+        return new MyResponse("操作失败！", 0);
+    }
+
+    /**
+     * 用户删除提现银行
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse delBank(TYIDDTO dto) {
+        int i = userBankDao.delBank(dto);
+        if (i == 1) {
+            return new MyResponse();
+        }
+        return new MyResponse("操作失败！", 0);
+    }
+
+    /**
+     * 用户提现银行列表
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse bankList(IdDTO dto) {
+        List<UserBank> result = userBankDao.bankList(dto);
+        return new MyResponse(result);
+    }
+
+    /**
+     * 更改默认提现银行
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse editDefaultBank(IdsDTO dto) {
+        userBankDao.editDefaultBank0(dto);
+        int i = userBankDao.editDefaultBank(dto);
+        if (i == 1) {
+            return new MyResponse();
+        }
+        return new MyResponse("操作失败！", 0);
+    }
+
+    /**
+     * 查询用户默认提现银行
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse selectDefaultBank(IdDTO dto) {
+        UserBank userBank = userBankDao.selectDefaultBank(dto);
+        return new MyResponse(userBank);
+    }
+
+    /**
+     * 效验电话是否存在
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public MyResponse verifyPhone(PhoneDTO dto) {
+        int i = userDao.verifyPhone(dto);
+        if (i > 0) {
+            return new MyResponse();
+        }
+        return new MyResponse("电话号码已存在", 0);
     }
 
 

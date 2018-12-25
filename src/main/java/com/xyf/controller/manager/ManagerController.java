@@ -1,19 +1,18 @@
 package com.xyf.controller.manager;
 
 import com.xyf.common.MyResponse;
-import com.xyf.dto.InitPartnerDTO;
-import com.xyf.dto.ListDTO;
-import com.xyf.dto.LoginDTO;
-import com.xyf.dto.ManagerDTO;
+import com.xyf.dto.*;
+import com.xyf.entity.ImgsUrl;
+import com.xyf.entity.ProductsLog;
+import com.xyf.entity.ShipLog;
 import com.xyf.entity.manager.ManagerUser;
 import com.xyf.service.manager.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.InputStream;
 import java.util.Map;
 
 
@@ -117,5 +116,122 @@ public class ManagerController {
     @PostMapping("/userLogin")
     public MyResponse userLogin(@RequestBody @Valid LoginDTO dto) {
         return managerServiceService.userLogin(dto);
+    }
+
+
+    /**
+     * 购买 pos 机
+     * @param productsLog
+     * @return
+     */
+    @PostMapping("/buyPosji")
+    public MyResponse buyPosji(@RequestBody @Valid ProductsLog productsLog) {
+        return managerServiceService.buyPosji(productsLog);
+    }
+
+    /**
+     * 可激活合伙人用户列表
+     * @return
+     */
+    @PostMapping("/buyPosjiUserList")
+    public MyResponse buyPosjiUserList(@RequestBody @Valid StatusDTO dto) {
+        return managerServiceService.buyPosjiUserList(dto);
+    }
+
+    /**
+     * 购买 POS 机发货列表
+     * @return
+     */
+    @PostMapping("/shipList")
+    public MyResponse shipList(@RequestBody @Valid StatusDTO dto) {
+        return managerServiceService.shipList(dto);
+    }
+
+    /**
+     * pos 发货状态改变
+     * @return
+     */
+    @PostMapping("/shipstatus")
+    public MyResponse shipstatus(@RequestBody @Valid TYIDDTO dto) {
+        return managerServiceService.shipstatus(dto);
+    }
+
+    /**
+     * 平台收益记录
+     * @return
+     */
+    @PostMapping("/ptuy")
+    public MyResponse ptuy(@RequestBody Page page) {
+        return managerServiceService.ptuy(page);
+    }
+
+    /**
+     * 用户收益记录
+     * @return
+     */
+    @PostMapping("/yhuy")
+    public MyResponse yhuy(@RequestBody@Valid IdDTO dto) {
+        return managerServiceService.ysuy(dto);
+    }
+
+    /**
+     * 用户刷卡记录
+     * @return
+     */
+    @PostMapping("/yhUseCard")
+    public MyResponse yhUseCard(@RequestBody@Valid IdDTO dto) {
+        return managerServiceService.yhUseCard(dto);
+    }
+
+
+    /**
+     * 后台查看提现记录
+     * @param shipLogPageDTO
+     * @return
+     */
+    @PostMapping("/shipLogList")
+    public MyResponse shipLogList(@RequestBody @Valid ShipLogPageDTO shipLogPageDTO) {
+        return managerServiceService.shipLogList(shipLogPageDTO);
+    }
+
+    /**
+     * 更改提现状态
+     * @param
+     * @return
+     */
+    @PostMapping("/editShipLogStatus")
+    public MyResponse editShipLogStatus(@RequestBody @Valid TYIDDTO id) {
+        return managerServiceService.editShipLogStatus(id);
+    }
+
+    /**
+     * 图片地址
+     * @param
+     * @return
+     */
+    @PostMapping("/imgsUrlList")
+    public MyResponse imgsUrlList() {
+        return managerServiceService.imgsUrlList();
+    }
+
+    /**
+     * 修改图片地址
+     * @param
+     * @return
+     */
+    @PostMapping("/editImgsUrl")
+    public MyResponse editImgsUrl(@RequestBody @Valid ImgsUrl imgsUrl) {
+        return managerServiceService.editImgsUrl(imgsUrl);
+    }
+
+    //文件上传相关代码
+    @RequestMapping(value = "uploadExcel")
+    @ResponseBody
+    public MyResponse upload(@RequestBody MultipartFile file) {
+        if (file.isEmpty()) {
+            return new MyResponse("文件为空", 0);
+        }
+
+        return managerServiceService.excel(file);
     }
 }

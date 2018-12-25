@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.RaiseDao" >
+
+    <select id="findList" resultType="com.xyf.entity.Raise" parameterType="com.xyf.dto.Page">
+        select
+        id id,user_id userId,want_money wantMoney,current_money currentMoney,max_money maxMoney,bank_name bankName,
+        valid_data validData,data data,status
+        from raise
+        <if test="status != null">
+            where status = #{status}
+        </if>
+    </select>
+
+    <insert id="add" parameterType="com.xyf.entity.Raise">
+        INSERT INTO `wei`.`raise`
+        (`want_money`, `current_money`, `max_money`, `bank_name`, `valid_data`, `data`, `status`,`user_id`) VALUES
+        (#{wantMoney}, #{currentMoney}, #{maxMoney}, #{bankName}, #{validData}, now(), 0,#{userId});
+    </insert>
+
+    <select id="selectById" parameterType="com.xyf.entity.Raise" resultType="java.lang.Integer">
+        select count(id) from `wei`.`raise` where id = #{id}
+    </select>
+
+    <update id="edit" parameterType="com.xyf.entity.Raise">
+        UPDATE `wei`.`raise` SET
+        `status`=1 WHERE id = #{id}
+    </update>
+
+    <delete id="del" parameterType="com.xyf.entity.Raise">
+        delete from `wei`.`raise` WHERE id = #{id}
+    </delete>
+</mapper>

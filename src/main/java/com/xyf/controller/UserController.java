@@ -2,6 +2,8 @@ package com.xyf.controller;
 
 import com.xyf.common.MyResponse;
 import com.xyf.dto.*;
+import com.xyf.entity.ShipLog;
+import com.xyf.entity.UserBank;
 import com.xyf.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +41,15 @@ public class UserController {
     @PostMapping("/baselogin")
     public MyResponse login(@RequestBody @Valid LoginDTO dto) {
         return userService.login(dto);
+    }
+
+    /**
+     * 效验电话是否存在
+     * @return
+     */
+    @PostMapping("/verifyPhone")
+    public MyResponse verifyPhone(@RequestBody @Valid PhoneDTO dto) {
+        return userService.verifyPhone(dto);
     }
 
     /**
@@ -109,7 +120,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/expectedReturn")
-    public MyResponse expectedReturn(@RequestBody @Valid PhoneDTO dto) {
+    public MyResponse expectedReturn(@RequestBody @Valid IdDTO dto) {
         return userService.expectedReturn(dto);
     }
 
@@ -132,6 +143,66 @@ public class UserController {
     }
 
 
+    /**
+     * 用户添加提现日志
+     * @return
+     */
+    @PostMapping("/addShipLog")
+    public MyResponse addShipLog(@RequestBody @Valid ShipLog shipLog) {
+        return userService.addShipLog(shipLog);
+    }
 
+    /**
+     * 用户添加提现银行
+     * @return
+     */
+    @PostMapping("/addBank")
+    public MyResponse addBank(@RequestBody @Valid UserBank userBank) {
+        return userService.addBank(userBank);
+    }
 
+    /**
+     * 用户修改提现银行
+     * @return
+     */
+    @PostMapping("/editBank")
+    public MyResponse editBank(@RequestBody @Valid UserBank userBank) {
+        return userService.editBank(userBank);
+    }
+
+    /**
+     * 用户删除提现银行
+     * @return
+     */
+    @PostMapping("/delBank")
+    public MyResponse delBank(@RequestBody @Valid TYIDDTO dto) {
+        return userService.delBank(dto);
+    }
+
+    /**
+     * 用户提现银行列表
+     * @return
+     */
+    @PostMapping("/bankList")
+    public MyResponse bankList(@RequestBody @Valid IdDTO dto) {
+        return userService.bankList(dto);
+    }
+
+    /**
+     * 更改默认提现银行
+     * @return
+     */
+    @PostMapping("/editDefaultBank")
+    public MyResponse editDefaultBank(@RequestBody @Valid IdsDTO dto) {
+        return userService.editDefaultBank(dto);
+    }
+
+    /**
+     * 查询用户默认提现银行
+     * @return
+     */
+    @PostMapping("/selectDefaultBank")
+    public MyResponse selectDefaultBank(@RequestBody @Valid IdDTO dto) {
+        return userService.selectDefaultBank(dto);
+    }
 }

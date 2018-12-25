@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.MoneyConstantDao">
+
+    <select id="find" resultType="com.xyf.entity.manager.MoneyConstant">
+      select buyPosMoney,level1UseCardMoney,level2UseCardMoney,level3UseCardMoney from money_constant where id = 1
+    </select>
+
+    <update id="edit" parameterType="com.xyf.entity.manager.MoneyConstant">
+        UPDATE `wei`.`money_constant`
+        <set>
+            <if test="buyPosMoney != null">
+                `buyPosMoney`=#{buyPosMoney},
+            </if>
+            <if test="level1UseCardMoney != null">
+                `level1UseCardMoney`=#{level1UseCardMoney},
+            </if>
+            <if test="level2UseCardMoney != null">
+                `level2UseCardMoney`=#{level2UseCardMoney},
+            </if>
+            <if test="level3UseCardMoney != null">
+                `level3UseCardMoney`=#{level3UseCardMoney},
+            </if>
+        </set>
+        where id = 1
+    </update>
+
+
+</mapper>

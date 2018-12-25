@@ -1,9 +1,12 @@
 package com.xyf.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @Table(name = "money_log")
 public class MoneyLog implements Serializable {
@@ -33,9 +36,9 @@ public class MoneyLog implements Serializable {
     private Double money;
 
     /**
-    * 状态
-    * 1 : 提现到用户
-    * 2 ：提现到平台
+    * 状态(给用户或平台)
+    * 1 : 用户
+    * 2 ：平台
     */
     private Integer status;
 
@@ -49,12 +52,44 @@ public class MoneyLog implements Serializable {
      */
     private Integer fromUserId;
 
-    public MoneyLog(Integer userId, Double money, Integer status, Integer type, Integer fromUserId) {
+    private Integer posId = 0;
+    private Double useMoney = 0D;
+
+    @JsonFormat(pattern = "yyyy-MM-dd mm:HH:ss")
+    private Date time;
+
+    public Double getUseMoney() {
+        return useMoney;
+    }
+
+    public void setUseMoney(Double useMoney) {
+        this.useMoney = useMoney;
+    }
+
+    public Integer getPosId() {
+        return posId;
+    }
+
+    public void setPosId(Integer posId) {
+        this.posId = posId;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public MoneyLog(Integer userId, Double money, Integer status, Integer type, Integer fromUserId,Integer posId,Double useMoney) {
         this.userId = userId;
         this.money = money;
         this.status = status;
         this.type = type;
         this.fromUserId = fromUserId;
+        this.posId = posId;
+        this.useMoney = useMoney;
     }
 
     public Integer getFromUserId() {

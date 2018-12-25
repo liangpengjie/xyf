@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xyf.dao.MoneyLogDao" >
+<mapper namespace="com.xyf.dao.MoneyLogDao">
     <resultMap id="BaseResultMap" type="com.xyf.entity.MoneyLog">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
@@ -10,19 +10,69 @@
         <result column="from_user_id" property="fromUserId" jdbcType="INTEGER"/>
     </resultMap>
 
-    <insert id="add" parameterType="com.xyf.entity.MoneyLog" >
+    <insert id="add" parameterType="com.xyf.entity.MoneyLog">
         INSERT INTO `wei`.`money_log`
-        (`user_id`, `money`, `status`, `type`, `from_user_id`)
-        VALUES (#{userId}, #{money}, #{status}, #{type}, #{fromUserId});
+        (`user_id`, `money`, `status`, `type`, `from_user_id`,`time`,`pos_id`,`use_money`)
+        VALUES (#{userId}, #{money}, #{status}, #{type}, #{fromUserId},now(),#{posId},#{useMoney});
     </insert>
 
-    <insert id="addList" parameterType="com.xyf.entity.MoneyLog" >
+    <insert id="addList" parameterType="java.util.List">
         INSERT INTO `wei`.`money_log`
-        (`user_id`, `money`, `status`, `type`, `from_user_id`)
+        (`user_id`, `money`, `status`, `type`, `from_user_id`,`time`,`pos_id`,`use_money`)
         VALUES
-        <foreach collection="moneyLogs" item="moneyLog" index= "index" separator =",">
-          (#{moneyLog.userId}, #{moneyLog.money}, #{moneyLog.status}, #{moneyLog.type}, #{moneyLog.fromUserId});
+        <foreach collection="moneyLogs" item="moneyLog" index="index" separator=",">
+            (#{moneyLog.userId}, #{moneyLog.money}, #{moneyLog.status}, #{moneyLog.type}, #{moneyLog.fromUserId},now(),#{moneyLog.posId},#{moneyLog.useMoney})
         </foreach>
     </insert>
 
+    <select id="ptList" resultType="com.xyf.entity.MoneyLog">
+        SELECT
+        id,user_id userId ,money,`status`,type,from_user_id fromUserId,time,pos_id posId,use_money useMoney from money_log WHERE user_id = 0 and `status` = 2
+        <!--SELECT
+            m.id id,
+            m.user_id userId,
+            m.money money,
+            m.`status` STATUS,
+            m.type type,
+            u.username fromUserName,
+            m.time time,
+            pos_id posId,
+            m.use_money useMoney
+        FROM
+            money_log m
+        LEFT JOIN USER u ON m.from_user_id = u.user_id
+        WHERE
+            m.user_id = 0
+        AND m.`status` = 2-->
+    </select>
+
+
+    <select id="uhList" parameterType="com.xyf.dto.IdDTO" resultType="com.xyf.entity.MoneyLog">
+         SELECT id,user_id userId ,money,`status`,type,from_user_id fromUserId,time,pos_id posId,use_money useMoney from money_log WHERE user_id = #{userId} and `status` = 1
+        <!--SELECT
+            m.id id,
+            m.user_id userId,
+            m.money money,
+            m.`status` STATUS,
+            m.type type,
+            u.username fromUserName,
+            m.time time,
+            pos_id posId,
+            m.use_money useMoney
+        FROM
+            money_log m LEFT JOIN USER u ON m.from_user_id = u.user_id
+        WHERE
+            m.user_id = #{userId}
+        AND m.`status` = '1'-->
+    </select>
+
+
+    <select id="yhUseCard" parameterType="com.xyf.dto.IdDTO" resultType="com.xyf.vo.YHUseCardVO">
+        SELECT m.id,m.user_id userId ,m.money,m.status,m.type,m.from_user_id fromUserId,m.time,p.pos_name posName,m.use_money useMoney from
+        money_log m LEFT JOIN posji p on m.pos_id = p.pos_id where type = 3 and user_id = #{userId}
+    </select>
+
+    <select id="sjuy" parameterType="java.lang.String" resultType="java.lang.Double">
+
+    </select>
 </mapper>

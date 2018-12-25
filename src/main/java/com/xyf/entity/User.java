@@ -35,7 +35,17 @@ public class User implements Serializable {
     private Integer superior3;
     //  用户等级    0：普通用户  9:合伙人  1：银牌代理     2：金牌代理    3： 钻石代理
     private Integer level;
+    // 合伙人状态
+    private Integer isPartner;
     private Date createTime;
+
+    public Integer getIsPartner() {
+        return isPartner;
+    }
+
+    public void setIsPartner(Integer isPartner) {
+        this.isPartner = isPartner;
+    }
 
     public Double getCashBackBonus() {
         return cashBackBonus;
