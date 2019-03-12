@@ -5,7 +5,7 @@
     <select id="findList" resultType="com.xyf.entity.Raise" parameterType="com.xyf.dto.Page">
         select
         id id,user_id userId,want_money wantMoney,current_money currentMoney,max_money maxMoney,bank_name bankName,
-        valid_data validData,data data,status
+        valid_data validData,data data,status status,update_time updateTime,card_id cardId, user_name userName,phone phone
         from raise
         <if test="status != null">
             where status = #{status}
@@ -14,8 +14,8 @@
 
     <insert id="add" parameterType="com.xyf.entity.Raise">
         INSERT INTO `wei`.`raise`
-        (`want_money`, `current_money`, `max_money`, `bank_name`, `valid_data`, `data`, `status`,`user_id`) VALUES
-        (#{wantMoney}, #{currentMoney}, #{maxMoney}, #{bankName}, #{validData}, now(), 0,#{userId});
+        (`want_money`, `current_money`, `max_money`, `bank_name`, `valid_data`, `data`, `status`,`user_id`,update_time,card_id,user_name,phone) VALUES
+        (#{wantMoney}, #{currentMoney}, #{maxMoney}, #{bankName}, #{validData}, now(), 0,#{userId},now(),#{cardId},#{userName},#{phone});
     </insert>
 
     <select id="selectById" parameterType="com.xyf.entity.Raise" resultType="java.lang.Integer">
@@ -24,7 +24,7 @@
 
     <update id="edit" parameterType="com.xyf.entity.Raise">
         UPDATE `wei`.`raise` SET
-        `status`=1 WHERE id = #{id}
+        update_time = now(), `status`=1 WHERE id = #{id}
     </update>
 
     <delete id="del" parameterType="com.xyf.entity.Raise">

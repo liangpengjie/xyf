@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 80
   tomcat.uri-encoding: UTF-8
 
 img:
@@ -57,11 +57,11 @@ mybatis:
 
 #pagehelper
 pagehelper:
-    helperDialect: mysql
-    reasonable: true
-    supportMethodsArguments: true
-    params: count=countSql
-    returnPageInfo: check
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+  returnPageInfo: check
 
 logging:
   level:
@@ -77,14 +77,22 @@ endpoints:
     enabled: true
     path: /xyf
 
-wx:
-  pay:
-    appId: wx4e31adf4c44e85e3
-    mchId: 1518167471
-    #mchKey: #微信支付商户密钥
-    #subAppId: #服务商模式下的子商户公众账号ID
-    #subMchId: #服务商模式下的子商户号
-    keyPath: classpath:cert/apiclient_cert.p12
+wechat:
+  mpAppId: wx4e31adf4c44e85e3
+  mpAppSecret: f5f155da09b0dfd693d17891598bbf3b
+  openAppId: wx6ad144e54af67d87
+  openAppSecret: 91a2ff6d38a2bbccfb7e9f9079108e2e
+  mchId: 1518167471
+  mchKey: WfHPlcjPddImE1WNksj4H2hd9Nyj68zJ
+  keyPath: cert/apiclient_cert.p12
+  notifyUrl: http://pos.zysq.top/pay/notify
+  templateId:
+    orderStatus: e-Cqq67QxD6YNI41iRiqawEYdFavW_7pc7LyEMb-yeQ
+
+projectUrl:
+  wechatMpAuthorize: http://pos.zysq.top
+  wechatOpenAuthorize: http://pos.zysq.top
+  sell: http://pos.zysq.top
 
 
 

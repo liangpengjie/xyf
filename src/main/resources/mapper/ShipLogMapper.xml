@@ -5,13 +5,13 @@
 
     <insert id="addShipLog" parameterType="com.xyf.entity.ShipLog">
         INSERT INTO `wei`.`ship_log`
-        (`user_id`, `bank_name`, `user_name`, `card_id`, `create_time`, `status`,`money`,`tx_type`) VALUES
-        (#{userId}, #{bankName}, #{userName}, #{cardId}, now(),0,#{money},#{txType});
+        (`user_id`, `bank_name`, `user_name`, `card_id`, `create_time`, `status`,`money`,`tx_type`,update_time) VALUES
+        (#{userId}, #{bankName}, #{userName}, #{cardId}, now(),0,#{money},#{txType},now());
     </insert>
 
     <select id="shipLogList" parameterType="com.xyf.dto.ShipLogPageDTO" resultType="com.xyf.vo.ShipLogVo">
         SELECT
-        s.id id,u.username userName,s.bank_name bankName,s.user_name userRealName,s.card_id cardId,s.create_time createTime,s.`status` status,s.money money,s.tx_type txType
+        s.id id,u.username userName,s.bank_name bankName,s.user_name userRealName,s.card_id cardId,s.create_time createTime,s.`status` status,s.money money,s.tx_type txType,s.update_time updateTime
         from ship_log s,`user` u where u.user_id = s.user_id and s.status = #{status}
         <if test="userId != null">
             and s.user_id = #{userId}
@@ -20,7 +20,7 @@
 
     <update id="editShipLogStatus" parameterType="com.xyf.dto.TYIDDTO">
         UPDATE `wei`.`ship_log`
-        SET `status`='1' WHERE (`id`=#{id})
+        SET update_time = now(),`status`='1' WHERE (`id`=#{id})
     </update>
 
 

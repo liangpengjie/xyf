@@ -3,12 +3,19 @@
 <mapper namespace="com.xyf.dao.ProductsLogDao">
 
     <insert id="insert" parameterType="com.xyf.entity.ProductsLog">
-      INSERT INTO `wei`.`products_log` ( `user_id`, `user_phone`, `pos_id_1`, `user_address`, `create_time`,pos_name_1,pos_name_2,user_name,terminal_number)
-      VALUES (#{userId}, #{userPhone}, #{posId1},  #{userAddress}, now(),#{posName1},#{userName},#{terminalNumber});
+      INSERT INTO `wei`.`products_log`
+      ( `user_id`, `user_phone`, `pos_id_1`, `user_address`, `create_time`,pos_name_1,user_name,terminal_number,update_time
+        <if test="status != null">
+          ,status
+        </if>)
+      VALUES (#{userId}, #{userPhone}, #{posId1},  #{userAddress}, now(),#{posName1},#{userName},#{terminalNumber},now()
+        <if test="status != null">
+            ,1
+        </if>);
     </insert>
 
     <update id="updateStatus" parameterType="com.xyf.dto.TYIDDTO">
-        update `wei`.`products_log` set status = 1 where id = #{id}
+        update `wei`.`products_log` set update_time = now(),status = 1 where id = #{id}
     </update>
 
     <select id="list" resultType="com.xyf.entity.User" parameterType="com.xyf.dto.StatusDTO">
@@ -19,13 +26,47 @@
 
     <select id="shipList" parameterType="com.xyf.dto.StatusDTO" resultType="java.util.Map">
         SELECT
-        p.id id,u.user_id userId,u.phone phone, p.user_address sAddress,p.user_phone sPhone,p.user_name userName,p.pos_name_1 posName1,p.status status,p.terminal_number terminalNumber
+        p.id id,u.user_id userId,u.phone phone, p.user_address sAddress,p.user_phone sPhone,p.user_name userName,p.pos_name_1 posName1,p.status status,p.terminal_number terminalNumber,DATE_FORMAT(p.update_time,'%Y-%m-%d %k:%i:%s') AS updateTime
         from `user` u RIGHT JOIN products_log p on p.user_id = u.user_id
         WHERE p.`status` = #{status}
     </select>
 
+    <select id="selectPosById" parameterType="com.xyf.dto.TYIDDTO" resultType="com.xyf.entity.ProductsLog">
+        SELECT
+        p.id id,p.user_id userId,p.user_phone userPhone, p.user_address userAddress,p.user_phone sPhone,p.user_name userName,p.pos_name_1 posName1,p.status status,p.terminal_number terminalNumber,
+        DATE_FORMAT(p.update_time,'%Y-%m-%d %k:%i:%s') AS updateTime,
+        DATE_FORMAT(p.create_time,'%Y-%m-%d %k:%i:%s') AS createTime
+        from  products_log p
+        WHERE p.user_id = #{id}
+    </select>
+
+    <select id="selectPosByProductLogId" parameterType="com.xyf.dto.TYIDDTO" resultType="java.lang.Integer">
+        SELECT count(1)
+        from  products_log p
+        WHERE p.id = #{id}
+    </select>
+
     <update id="updateTerminal" parameterType="com.xyf.dto.InitPartnerDTO">
-        update `wei`.`products_log` set terminal_number = #{terminalNumber} where user_id = #{userId} and terminal_number is null
+        update `wei`.`products_log` set update_time = now(),terminal_number = #{terminalNumber} where user_id = #{userId} and terminal_number is null
     </update>
 
+    <update id="updateTerminalById" parameterType="com.xyf.dto.TYIDDTO">
+        update `wei`.`products_log` set
+        update_time = now(),terminal_number = #{terminalNumber} where id = #{id}
+    </update>
+
+
+    <select id="selectUserByTerminalNumber" parameterType="java.lang.String" resultType="com.xyf.entity.User">
+        SELECT u.`user_id` userId, u.`username` userName, u.`phone` phone, u.`address` address, u.`goods_number` goodsNumber, u.`balance` userBalance, u.`superior1` superior1, u.`superior2` superior2, u.`superior3` superior3, u.`user_bonus` userBonus, u.`use_card_bonus` useCardBonus, u.`level` level, u.`create_time` createTime, u.`create_card_bonus` createCardBonus,u.cash_back_bonus cashBackBonus,u.is_partner isPartner,u.update_time updateTime
+         from `user` u,products_log p WHERE p.user_id = u.user_id and p.terminal_number = #{terminalNumber}
+    </select>
+
+    <select id="selectPosJiByTerminalNumber" parameterType="java.lang.String" resultType="com.xyf.entity.PosJi">
+        select p.`pos_id` posId, p.`pos_name` posName, p.`rate` rate, p.`deductionate` deductionate, p.`detil_text` detilText, p.`detil_img` detilImg, p.`instructions4Use` instructions4Use, p.`identifier` identifier
+        from `wei`.`posji` p, products_log pl where p.pos_id = pl.pos_id_1 and pl.terminal_number = #{terminalNumber}
+    </select>
+
+    <delete id="deletePosById" parameterType="com.xyf.dto.TYIDDTO">
+        delete from products_log where id = #{id} and user_id = #{userId}
+    </delete>
 </mapper>

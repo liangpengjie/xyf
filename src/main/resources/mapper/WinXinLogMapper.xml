@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyf.dao.WinXinLogDao">
+
+<!--auto generated Code-->
+    <resultMap id="AllColumnMap" type="com.xyf.entity.WinXinLog">
+        <result column="id" property="id"/>
+        <result column="open_id" property="openId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="order_amount" property="orderAmount"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+<!--auto generated Code-->
+    <sql id="all_column">
+        id,
+        open_id,
+        order_id,
+        order_amount,
+        status
+    </sql>
+
+<!--auto generated Code-->
+    <insert id="insert">
+        INSERT INTO win_xin_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> id, </if>
+            <if test="pojo.openId != null"> open_id, </if>
+            <if test="pojo.orderId != null"> order_id, </if>
+            <if test="pojo.orderAmount != null"> order_amount, </if>
+            <if test="pojo.status != null"> status, </if>
+            <if test="pojo.createTime != null"> create_time, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pojo.id != null"> #{pojo.id}, </if>
+            <if test="pojo.openId != null"> #{pojo.openId}, </if>
+            <if test="pojo.orderId != null"> #{pojo.orderId}, </if>
+            <if test="pojo.orderAmount != null"> #{pojo.orderAmount}, </if>
+            <if test="pojo.status != null"> #{pojo.status}, </if>
+            <if test="pojo.createTime != null"> #{pojo.createTime}, </if>
+        </trim>
+    </insert>
+
+<!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO win_xin_log(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{pojo.id},
+            #{pojo.openId},
+            #{pojo.orderId},
+            #{pojo.orderAmount},
+            #{pojo.status}
+            )
+        </foreach>
+    </insert>
+
+<!--auto generated Code-->
+    <update id="update">
+        UPDATE win_xin_log
+        <set>
+            <if test="pojo.id != null"> id = #{pojo.id}, </if>
+            <if test="pojo.openId != null"> open_id = #{pojo.openId}, </if>
+            <if test="pojo.orderId != null"> order_id = #{pojo.orderId}, </if>
+            <if test="pojo.orderAmount != null"> order_amount = #{pojo.orderAmount}, </if>
+            <if test="pojo.status != null"> status = #{pojo.status} </if>
+        </set>
+         WHERE id = #{pojo.id}
+    </update>
+
+<!--auto generated Code-->
+    <select id="select" resultMap="AllColumnMap">
+        SELECT <include refid="all_column"/>
+        FROM win_xin_log
+        <where>
+            <if test="pojo.id != null"> AND id = #{pojo.id} </if>
+            <if test="pojo.openId != null"> AND open_id = #{pojo.openId} </if>
+            <if test="pojo.orderId != null"> AND order_id = #{pojo.orderId} </if>
+            <if test="pojo.orderAmount != null"> AND order_amount = #{pojo.orderAmount} </if>
+            <if test="pojo.status != null"> AND status = #{pojo.status} </if>
+            <if test="pojo.createTime != null"> AND status = #{pojo.createTime} </if>
+        </where>
+        LIMIT 1000 
+    </select>
+
+<!--auto generated Code-->
+    <delete id="delete">
+        DELETE FROM win_xin_log where id = #{id}
+    </delete>
+</mapper>

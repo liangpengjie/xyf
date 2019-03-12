@@ -5,8 +5,8 @@
 
     <insert id="CreateCardInfo" parameterType="com.xyf.dto.CreateCardInfoDTO">
       INSERT into createcardinfo
-      (user_id,real_name,phone,bank_name,id_number,create_time)
-      values (#{userId},#{realName},#{phone},#{bankName},#{idNumber},#{createTime})
+      (user_id,real_name,phone,bank_name,id_number,create_time,update_time)
+      values (#{userId},#{realName},#{phone},#{bankName},#{idNumber},#{createTime},now())
     </insert>
 
     <select id="getUserByPhone" parameterType="java.lang.String" resultType="com.xyf.entity.manager.CreateCardInfo">
@@ -17,7 +17,7 @@
 
     <select id="createCardInfoList" parameterType="com.xyf.dto.Page" resultType="com.xyf.entity.manager.CreateCardInfo">
         SELECT
-        c.id id,c.user_id userId,c.id_number idNumber,c.real_name realName,b.bank_name bankName,c.create_time createTime,c.`status` status,c.phone phone,b.superior_bonus superiorBonus,b.bank_bonus bankBonus
+        c.id id,c.user_id userId,c.id_number idNumber,c.real_name realName,b.bank_name bankName,c.create_time createTime,c.`status` status,c.phone phone,b.superior_bonus superiorBonus,b.bank_bonus bankBonus,c.update_time updateTime
         FROM createcardinfo c,bank b WHERE c.bank_name = b.bank_id
         <if test="phone != null">
             and c.phone like '%${phone}%'
@@ -28,7 +28,7 @@
     </select>
 
     <update id="updateStatus" parameterType="java.util.Map">
-      UPDATE `createcardinfo` set status= #{status} WHERE user_id = ${userId}
+      UPDATE `createcardinfo` set update_time = now(),status= #{status} WHERE user_id = ${userId}
     </update>
 
     <delete id="delete" parameterType="com.xyf.dto.TYIDDTO">
